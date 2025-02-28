@@ -7,7 +7,88 @@
 
     <fragment
         android:id="@+id/splashScreenFragment"
-        android:name="ru.android.nectar.SplashScreenFragment"
+        android:name="ru.android.nectar.ui.authorization.SplashScreenFragment"
         android:label="fragment_splash_screen"
-        tools:layout="@layout/fragment_splash_screen" />
+        tools:layout="@layout/fragment_splash_screen" >
+        <action
+            android:id="@+id/action_splashScreenFragment_to_onBoardingFragment"
+            app:destination="@id/onBoardingFragment" />
+        <action
+            android:id="@+id/action_splashScreenFragment_to_shopFragment"
+            app:destination="@id/shopFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/onBoardingFragment"
+        android:name="ru.android.nectar.ui.authorization.OnBoardingFragment"
+        android:label="fragment_on_boarding"
+        tools:layout="@layout/fragment_on_boarding" >
+        <action
+            android:id="@+id/action_onBoardingFragment_to_signInFragment"
+            app:destination="@id/signInFragment" />
+        <action
+            android:id="@+id/action_onBoardingFragment_to_numberFragment"
+            app:destination="@id/numberFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="ru.android.nectar.ui.authorization.SignInFragment"
+        android:label="fragment_sign_in"
+        tools:layout="@layout/fragment_sign_in" />
+    <fragment
+        android:id="@+id/numberFragment"
+        android:name="ru.android.nectar.ui.authorization.NumberFragment"
+        android:label="fragment_number"
+        tools:layout="@layout/fragment_number" >
+        <action
+            android:id="@+id/action_numberFragment_to_verificationFragment"
+            app:destination="@id/verificationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/verificationFragment"
+        android:name="ru.android.nectar.ui.authorization.VerificationFragment"
+        android:label="fragment_verification"
+        tools:layout="@layout/fragment_verification" >
+        <action
+            android:id="@+id/action_verificationFragment_to_shopFragment"
+            app:destination="@id/shopFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/shopFragment"
+        android:name="ru.android.nectar.ui.shop.ShopFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_shop" />
+    <fragment
+        android:id="@+id/exploreFragment"
+        android:name="ru.android.nectar.ui.explore.ExploreFragment"
+        android:label="fragment_explore"
+        tools:layout="@layout/fragment_explore" />
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="ru.android.nectar.ui.cart.CartFragment"
+        android:label="fragment_cart"
+        tools:layout="@layout/fragment_cart" >
+        <action
+            android:id="@+id/action_cartFragment_to_orderAcceptedFragment"
+            app:destination="@id/orderAcceptedFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/favouriteFragment"
+        android:name="ru.android.nectar.ui.favourite.FavouriteFragment"
+        android:label="fragment_favourite"
+        tools:layout="@layout/fragment_favourite" />
+    <fragment
+        android:id="@+id/accountFragment"
+        android:name="ru.android.nectar.ui.account.AccountFragment"
+        android:label="fragment_account"
+        tools:layout="@layout/fragment_account" >
+        <action
+            android:id="@+id/action_accountFragment_to_onBoardingFragment"
+            app:destination="@id/onBoardingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/orderAcceptedFragment"
+        android:name="ru.android.nectar.ui.cart.OrderAcceptedFragment"
+        android:label="fragment_order_accepted"
+        tools:layout="@layout/fragment_order_accepted" />
 </navigation>

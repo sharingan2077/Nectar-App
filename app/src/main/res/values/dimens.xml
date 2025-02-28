@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="width_ic_logout">21dp</dimen>
+    <dimen name="margin_top_title_fragment">30dp</dimen>
+</resources>

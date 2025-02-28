@@ -13,10 +13,36 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:defaultNavHost="true"
-        app:navGraph="@navigation/nav_graph"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:navGraph="@navigation/nav_graph" />
+
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorSurface"
+        app:backgroundTint="@color/white"
+        app:itemActiveIndicatorStyle="@style/Widget.Design.BottomNavigationView"
+        app:itemIconTint="@color/bottom_nav_item_color"
+        app:elevation="40dp"
+        android:elevation="40dp"
+        app:itemRippleColor="@android:color/transparent"
+        app:itemTextColor="@color/bottom_nav_text_color"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
+
+<!--    android:background="?attr/colorSurface"-->
+<!--    android:layout_gravity="bottom"-->
+<!--    app:itemPaddingBottom="20dp"-->
+<!--    app:itemPaddingTop="20dp"-->
+<!--    android:paddingTop="0dp"-->
+<!--    android:paddingBottom="0dp"-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,8 +1,14 @@
+import com.android.build.gradle.internal.tasks.databinding.DataBindingGenBaseClassesTask
+import org.gradle.internal.extensions.stdlib.capitalized
+import org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompileTool
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id("com.google.devtools.ksp")
-    kotlin("plugin.serialization") version "2.0.21"
+    id("com.google.dagger.hilt.android")
+    id("kotlin-kapt")
+//    id("com.google.devtools.ksp")
+//    kotlin("plugin.serialization") version "2.0.21"
 }
 
 android {
@@ -16,6 +22,7 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -34,15 +41,26 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        viewBinding = true
+    }
+    // Allow references to generated code
+    kapt {
+        correctErrorTypes = true
+    }
 }
 
 dependencies {
+    //Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+
     //Navigation
     val navigationVersion = "2.8.7"
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.navigation.dynamic.features.fragment)
-    implementation(libs.kotlinx.serialization.json)
+//    implementation(libs.kotlinx.serialization.json)
 
     //Lifecycle
     val lifecycleVersion = "2.8.7"
@@ -52,28 +70,19 @@ dependencies {
     //Room
     val roomVersion = "2.6.1"
     implementation(libs.androidx.room.runtime)
-    annotationProcessor(libs.androidx.room.compiler)
-    ksp(libs.androidx.room.compiler)
+//    ksp(libs.androidx.room.compiler)
+    kapt("androidx.room:room-compiler:2.6.1")  // Для Kotlin
     implementation(libs.androidx.room.ktx)
-
-    //Paging
-    implementation(libs.androidx.paging.runtime.ktx)
 
     //Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 
-    //Picasso
-    implementation(libs.picasso)
-
-    //Koin
-    implementation(libs.koin.core)
-    implementation(libs.koin.android)
-    implementation(libs.koin.android.compat)
-
     //Coroutines
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
+
+    implementation("androidx.fragment:fragment-ktx:1.8.6") // или более новая версия
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
