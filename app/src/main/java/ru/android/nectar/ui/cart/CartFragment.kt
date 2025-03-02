@@ -6,15 +6,19 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.LinearLayoutCompat.OrientationMode
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.android.nectar.R
 import ru.android.nectar.adapters.ProductAdapter
+import ru.android.nectar.adapters.ProductCartAdapter
+import ru.android.nectar.adapters.ProductTypeAdapter
 import ru.android.nectar.databinding.FragmentCartBinding
 import ru.android.nectar.databinding.FragmentShopBinding
 import ru.android.nectar.ui.favourite.FavouriteViewModel
@@ -26,16 +30,19 @@ class CartFragment : Fragment() {
 
     private lateinit var binding: FragmentCartBinding
     private val viewModel: ShopViewModel by activityViewModels()
-    private val favouriteViewModel: FavouriteViewModel by activityViewModels()
-    private lateinit var adapterProduct: ProductAdapter
+    private val cartViewModel: CartViewModel by activityViewModels()
+    private lateinit var adapterCartProduct: ProductCartAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentCartBinding.inflate(inflater)
 
+
         setupRecyclerView()
         observeData()
+
         binding.btnBuy.setOnClickListener {
             findNavController().navigate(R.id.action_cartFragment_to_orderAcceptedFragment)
         }
@@ -45,31 +52,40 @@ class CartFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        adapterProduct = ProductAdapter(
-            emptyList(),
-            onFavoriteCheck = { product, callback ->
+        adapterCartProduct = ProductCartAdapter(
+            countCheck = { product, callback ->
                 viewLifecycleOwner.lifecycleScope.launch {
-                    favouriteViewModel.isFavorite(1, product.id).collect { isFav ->
-                        callback(isFav) // Передаем результат обратно в адаптер
+                    cartViewModel.getCartProduct(1, product.id).collect { cartEntity ->
+                        cartEntity?.let {
+                            callback(it.count)
+                        }
                     }
                 }
             },
-            onFavoriteClick = { product ->
-                favouriteViewModel.toggleFavorite(1, product.id) // Меняем статус
+            incrementProduct = { product ->
+                cartViewModel.incrementCount(userId = 1, productId = product.id)
+            },
+            decrementProduct = { product ->
+                cartViewModel.decrementCount(userId = 1, productId = product.id)
+            },
+            removeProduct = { product ->
+                Log.d(TAG, "Remove product -> $product")
+                cartViewModel.removeCart(userId = 1, productId = product.id)
             }
-        )
 
-        binding.rvCart.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.rvCart.adapter = adapterProduct
+            )
+
+        binding.rvCart.layoutManager = LinearLayoutManager(context)
+        binding.rvCart.adapter = adapterCartProduct
 
     }
 
     private fun observeData() {
-
+        cartViewModel.loadCartProducts(1)
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.products.collect { products ->
-                Log.d(TAG, "All products -> $products")
-                adapterProduct.updateData(products)
+            cartViewModel.cartProducts.collectLatest { products ->
+                Log.d(TAG, "Received products: $products")
+                adapterCartProduct.submitList(products)
             }
         }
 

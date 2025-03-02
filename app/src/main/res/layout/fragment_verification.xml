@@ -15,7 +15,6 @@
         android:layout_marginTop="140dp"
         android:fontFamily="@font/gilroy_semibold"
         android:text="Enter your 4-digit code"
-        android:textColor="@color/black_9"
         android:textSize="26sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -27,7 +26,6 @@
         android:layout_marginTop="28dp"
         android:fontFamily="@font/gilroy_semibold"
         android:text="Code"
-        android:textColor="@color/gray_8"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@+id/textView5"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />

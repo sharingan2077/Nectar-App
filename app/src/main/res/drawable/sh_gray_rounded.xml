@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/gray_4"/> <!-- Серый фон -->
+<!--    <solid android:color="@color/gray_4"/> &lt;!&ndash; Серый фон &ndash;&gt;-->
+    <solid android:color="@color/md_theme_surfaceContainer"/> <!-- Серый фон -->
     <corners android:radius="8dp"/> <!-- Закругленные углы -->
 </shape>

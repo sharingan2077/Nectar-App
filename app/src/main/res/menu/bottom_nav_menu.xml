@@ -1,33 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+<!--    <item-->
+<!--        android:id="@+id/shopFragment"-->
+<!--        android:icon="@drawable/ic_bottom_shop"-->
+<!--        android:title="Shop"-->
+<!--        android:iconTint="@color/bottom_nav_item_color"-->
+<!--        android:titleTextColor="@color/bottom_nav_text_color"/>-->
+<!--    <item-->
     <item
         android:id="@+id/shopFragment"
         android:icon="@drawable/ic_bottom_shop"
-        android:title="Shop"
-        android:iconTint="@color/bottom_nav_item_color"
-        android:titleTextColor="@color/bottom_nav_text_color"/>
+        android:title="Shop" />
     <item
         android:id="@+id/exploreFragment"
         android:icon="@drawable/ic_bottom_explore"
-        android:title="Explore"
-        android:iconTint="@color/bottom_nav_item_color"
-        android:titleTextColor="@color/bottom_nav_text_color"/>
+        android:title="Explore" />
     <item
         android:id="@+id/cartFragment"
         android:icon="@drawable/ic_bottom_cart"
-        android:title="Cart"
-        android:iconTint="@color/bottom_nav_item_color"
-        android:titleTextColor="@color/bottom_nav_text_color"/>
+        android:title="Cart" />
     <item
         android:id="@+id/favouriteFragment"
         android:icon="@drawable/ic_bottom_favourite"
-        android:title="Favourite"
-        android:iconTint="@color/bottom_nav_item_color"
-        android:titleTextColor="@color/bottom_nav_text_color"/>
+        android:title="Favourite" />
     <item
         android:id="@+id/accountFragment"
         android:icon="@drawable/ic_bottom_account"
-        android:title="Account"
-        android:iconTint="@color/bottom_nav_item_color"
-        android:titleTextColor="@color/bottom_nav_text_color"/>
+        android:title="Account" />
 </menu>

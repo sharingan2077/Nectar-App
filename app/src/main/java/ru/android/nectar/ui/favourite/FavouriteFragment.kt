@@ -1,11 +1,13 @@
 package ru.android.nectar.ui.favourite
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -13,12 +15,14 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.android.nectar.adapters.ProductAdapter
 import ru.android.nectar.databinding.FragmentFavouriteBinding
+import ru.android.nectar.ui.cart.CartViewModel
 
 @AndroidEntryPoint
 class FavouriteFragment : Fragment() {
 
     private lateinit var binding: FragmentFavouriteBinding
     private val viewModel: FavouriteViewModel by activityViewModels()
+    private val cartViewModel: CartViewModel by activityViewModels()
     private lateinit var adapter: ProductAdapter
 
     override fun onCreateView(
@@ -38,7 +42,16 @@ class FavouriteFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = ProductAdapter(
-            products = emptyList(),
+            onCartCheck = { product, callback ->
+                viewLifecycleOwner.lifecycleScope.launch {
+                    cartViewModel.isCart(1, product.id).collect { isCart ->
+                        callback(isCart)
+                    }
+                }
+            },
+            onCartClick = { product ->
+                cartViewModel.addCart(1, product.id)
+            },
             onFavoriteCheck = { product, callback ->
                 viewLifecycleOwner.lifecycleScope.launch {
                     viewModel.isFavorite(1, product.id).collect { isFav ->
@@ -59,9 +72,10 @@ class FavouriteFragment : Fragment() {
     }
 
     private fun observeData() {
+        viewModel.loadFavouriteProducts(1)
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.getFavoriteProductEntities(1).collectLatest { products ->
-                adapter.updateData(products)
+            viewModel.favouriteProducts.collectLatest { products ->
+                adapter.submitList(products)
             }
         }
     }

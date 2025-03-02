@@ -28,12 +28,15 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         val bottomNavigationView = binding.bottomNavView
+
+
 
         enableEdgeToEdge()
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, v.paddingBottom - systemBars.bottom)
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
 
@@ -49,7 +52,8 @@ class MainActivity : AppCompatActivity() {
             R.id.exploreFragment,
             R.id.cartFragment,
             R.id.favouriteFragment,
-            R.id.accountFragment
+            R.id.accountFragment,
+            R.id.exploreFragment
         )
         navController.addOnDestinationChangedListener { _, destination, _ ->
             if (destination.id in bottomNavFragments) {
@@ -60,21 +64,10 @@ class MainActivity : AppCompatActivity() {
         }
         bottomNavigationView.setupWithNavController(navController)
 
-        WindowCompat.setDecorFitsSystemWindows(
-            window,
-            false
-        )
-
-        // Черные иконки в статус-баре
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                // Для API 30 и выше используем WindowInsetsController
-                window.insetsController?.setSystemBarsAppearance(
-                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
-                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-                )
-            }
-        }
+//        WindowCompat.setDecorFitsSystemWindows(
+//            window,
+//            false
+//        )
 
     }
 

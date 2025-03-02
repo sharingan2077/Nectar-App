@@ -14,6 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.android.nectar.adapters.ProductAdapter
 import ru.android.nectar.databinding.FragmentShopBinding
+import ru.android.nectar.ui.cart.CartViewModel
 import ru.android.nectar.ui.favourite.FavouriteViewModel
 
 private const val TAG = "ShopFragment"
@@ -25,6 +26,7 @@ class ShopFragment : Fragment() {
     private lateinit var binding: FragmentShopBinding
     private val viewModel: ShopViewModel by viewModels()
     private val favouriteViewModel: FavouriteViewModel by viewModels()
+    private val cartViewModel: CartViewModel by viewModels()
     private lateinit var adapterProduct: ProductAdapter
     private lateinit var adapterExclusive: ProductAdapter
     private lateinit var adapterBestSelling: ProductAdapter
@@ -36,6 +38,7 @@ class ShopFragment : Fragment() {
     ): View {
         binding = FragmentShopBinding.inflate(inflater, container, false)
 
+
 //        viewModel.refreshProducts(dataProductList)
 
         setupRecyclerView()
@@ -46,7 +49,16 @@ class ShopFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapterProduct = ProductAdapter(
-            emptyList(),
+            onCartCheck = { product, callback ->
+                viewLifecycleOwner.lifecycleScope.launch {
+                    cartViewModel.isCart(1, product.id).collect { isCart ->
+                        callback(isCart)
+                    }
+                }
+            },
+            onCartClick = { product ->
+                cartViewModel.addCart(1, product.id)
+            },
             onFavoriteCheck = { product, callback ->
                 viewLifecycleOwner.lifecycleScope.launch {
                     favouriteViewModel.isFavorite(1, product.id).collect { isFav ->
@@ -63,7 +75,17 @@ class ShopFragment : Fragment() {
         binding.rvAll.adapter = adapterProduct
 
         adapterExclusive = ProductAdapter(
-            emptyList(),
+            onCartCheck = { product, callback ->
+                viewLifecycleOwner.lifecycleScope.launch {
+                    cartViewModel.isCart(1, product.id).collect { isCart ->
+                        callback(isCart)
+                    }
+                }
+            },
+            onCartClick = { product ->
+                Log.d(TAG, "adapterExclusive onCartClick -> ${product.name}")
+                cartViewModel.addCart(1, product.id)
+            },
             onFavoriteCheck = { product, callback ->
                 viewLifecycleOwner.lifecycleScope.launch {
                     favouriteViewModel.isFavorite(1, product.id).collect { isFav ->
@@ -82,7 +104,17 @@ class ShopFragment : Fragment() {
         binding.rvExclusive.adapter = adapterExclusive
 
         adapterBestSelling = ProductAdapter(
-            emptyList(),
+            onCartCheck = { product, callback ->
+                viewLifecycleOwner.lifecycleScope.launch {
+                    cartViewModel.isCart(1, product.id).collect { isCart ->
+                        callback(isCart)
+                    }
+                }
+            },
+            onCartClick = { product ->
+                Log.d(TAG, "adapterBestSelling onCartClick -> ${product.name}")
+                cartViewModel.addCart(1, product.id)
+            },
             onFavoriteCheck = { product, callback ->
                 viewLifecycleOwner.lifecycleScope.launch {
                     favouriteViewModel.isFavorite(1, product.id).collect { isFav ->
@@ -105,21 +137,21 @@ class ShopFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.products.collect { products ->
                 Log.d(TAG, "All products -> $products")
-                adapterProduct.updateData(products)
+                adapterProduct.submitList(products)
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.productsExclusive.collect { products ->
                 Log.d(TAG, "Exclusive products -> $products")
-                adapterExclusive.updateData(products)
+                adapterExclusive.submitList(products)
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.productsBestSelling.collect { products ->
                 Log.d(TAG, "Best Selling products -> $products")
-                adapterBestSelling.updateData(products)
+                adapterBestSelling.submitList(products)
             }
         }
     }

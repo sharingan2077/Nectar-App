@@ -1,20 +1,26 @@
 package ru.android.nectar.adapters
 
+import android.animation.ObjectAnimator
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.android.nectar.R
 import ru.android.nectar.data.local.entity.ProductEntity
 import ru.android.nectar.databinding.ItemProductBinding
 
+
 private const val TAG = "ProductAdapter"
+
 class ProductAdapter(
-    private var products: List<ProductEntity>,
     private val onFavoriteCheck: (ProductEntity, (Boolean) -> Unit) -> Unit, // Запрос избранного
-    private val onFavoriteClick: (ProductEntity) -> Unit
-) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
+    private val onFavoriteClick: (ProductEntity) -> Unit,
+    private val onCartCheck: (ProductEntity, (Boolean) -> Unit) -> Unit, // Запрос избранного
+    private val onCartClick: (ProductEntity) -> Unit,
+) : ListAdapter<ProductEntity, ProductAdapter.ProductViewHolder>(ProductDiffCallback()) {
 
     inner class ProductViewHolder(private val binding: ItemProductBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -26,36 +32,24 @@ class ProductAdapter(
 
             binding.btnAdd.setOnClickListener {
                 // Обработчик нажатия на кнопку добавления
+                Log.d(TAG, "adapter onCartClick -> ${product.name}")
+                onCartClick(product)
             }
-
-            // Проверяем, является ли продукт в избранном
-//            viewModel.isFavorite(1, product.id).collect { isFav ->
-//                if (isFav) {
-//                    binding.imgProduct.setColorFilter(
-//                        ContextCompat.getColor(
-//                            binding.root.context,
-//                            R.color.red
-//                        )
-//                    )
-//                } else {
-//                    binding.imgProduct.clearColorFilter()
-//                }
-//            }
-//
-//
-//            binding.imgProduct.setOnClickListener {
-//                // Переключаем статус избранного
-//                viewModel.toggleFavorite(1, product.id)
-//            }
+            // Запрос на проверку товара в корзине (ответ придёт в колбэк)
+            onCartCheck(product) { isCart ->
+                if (isCart) {
+                    binding.btnAdd.setImageResource(R.drawable.ic_in_cart_3)
+                } else {
+                    binding.btnAdd.setImageResource(R.drawable.ic_add)
+                }
+            }
 
             // Запрос на проверку избранного (ответ придёт в колбэк)
             onFavoriteCheck(product) { isFav ->
                 if (isFav) {
-                    binding.imgFavourite.setColorFilter(
-                        ContextCompat.getColor(binding.root.context, R.color.red)
-                    )
+                    binding.imgFavourite.setImageResource(R.drawable.ic_favourite_red)
                 } else {
-                    binding.imgFavourite.clearColorFilter()
+                    binding.imgFavourite.setImageResource(R.drawable.ic_favourite)
                 }
             }
 
@@ -73,13 +67,8 @@ class ProductAdapter(
     }
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        holder.bind(products[position])
+        val product = getItem(position)
+        holder.bind(product)
     }
 
-    override fun getItemCount() = products.size
-
-    fun updateData(newProducts: List<ProductEntity>) {
-        products = newProducts
-        notifyDataSetChanged()
-    }
 }

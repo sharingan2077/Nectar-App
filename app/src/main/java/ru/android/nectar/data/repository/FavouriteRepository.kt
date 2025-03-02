@@ -14,7 +14,7 @@ class FavouriteRepository @Inject constructor(
 
     fun isFavorite(userId: Int, productId: Int) = favouriteDao.isFavorite(userId, productId)
 
-    fun getFavoriteProducts(userId: Int) = favouriteDao.getFavoriteProducts(userId)
+    fun getFavouriteProducts(userId: Int) = favouriteDao.getFavouriteProducts(userId)
 
     fun getProductById(id: Int): Flow<ProductEntity> {
         return productDao.getProductById(id) // Получаем продукт по id

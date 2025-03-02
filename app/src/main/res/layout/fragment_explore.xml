@@ -10,29 +10,27 @@
         android:id="@+id/tv_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_top_title_fragment"
         android:fontFamily="@font/gilroy_bold"
         android:text="Find Products"
-        android:textColor="@color/black_9"
         android:textSize="20sp"
-        android:layout_marginTop="@dimen/margin_top_title_fragment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editText3"
+        android:id="@+id/et_explore"
         android:layout_width="0dp"
         android:layout_height="52dp"
         android:layout_marginStart="25dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="25dp"
         android:background="@drawable/sh_gray_rounded"
-        android:drawableLeft="@drawable/ic_search"
+        android:drawableStart="@drawable/ic_search"
         android:drawablePadding="10dp"
         android:fontFamily="@font/gilroy_semibold"
         android:hint="Search Store"
         android:paddingStart="15dp"
-        android:textColorHint="@color/gray_8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_1" />
@@ -43,8 +41,8 @@
         android:layout_height="0dp"
         android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/editText3"
-        app:layout_constraintStart_toStartOf="@+id/editText3"
-        app:layout_constraintTop_toBottomOf="@+id/editText3" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_explore" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

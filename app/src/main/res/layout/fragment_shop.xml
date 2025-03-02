@@ -42,12 +42,11 @@
                 android:layout_marginStart="8dp"
                 android:fontFamily="@font/gilroy_semibold"
                 android:text="Moscow, Russia"
-                android:textColor="@color/black_10"
                 android:textSize="18sp" />
         </LinearLayout>
 
         <EditText
-            android:id="@+id/editText3"
+            android:id="@+id/et_explore"
             android:layout_width="0dp"
             android:layout_height="52dp"
             android:layout_marginStart="25dp"
@@ -59,7 +58,6 @@
             android:fontFamily="@font/gilroy_semibold"
             android:hint="Search Store"
             android:paddingStart="15dp"
-            android:textColorHint="@color/gray_8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/container_1" />
@@ -70,10 +68,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:src="@drawable/banner"
-            app:layout_constraintEnd_toEndOf="@+id/editText3"
+            app:layout_constraintEnd_toEndOf="@+id/et_explore"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/editText3"
-            app:layout_constraintTop_toBottomOf="@+id/editText3" />
+            app:layout_constraintStart_toStartOf="@+id/et_explore"
+            app:layout_constraintTop_toBottomOf="@+id/et_explore" />
 
         <TextView
             android:id="@+id/textView8"
@@ -82,9 +80,8 @@
             android:layout_marginTop="30dp"
             android:fontFamily="@font/gilroy_semibold"
             android:text="Exclusive Offer"
-            android:textColor="@color/black_9"
             android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@+id/editText3"
+            app:layout_constraintStart_toStartOf="@+id/et_explore"
             app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -92,7 +89,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginStart="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
@@ -103,15 +99,13 @@
             android:layout_marginTop="10dp"
             android:fontFamily="@font/gilroy_semibold"
             android:text="Best Selling"
-            android:textColor="@color/black_9"
             android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@+id/editText3"
+            app:layout_constraintStart_toStartOf="@+id/et_explore"
             app:layout_constraintTop_toBottomOf="@+id/rv_exclusive" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_best_selling"
             android:layout_width="0dp"
-            android:layout_marginStart="10dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -124,16 +118,14 @@
             android:layout_marginTop="10dp"
             android:fontFamily="@font/gilroy_semibold"
             android:text="Categories"
-            android:textColor="@color/black_9"
             android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@+id/editText3"
+            app:layout_constraintStart_toStartOf="@+id/et_explore"
             app:layout_constraintTop_toBottomOf="@+id/rv_best_selling" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_сategories"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -144,7 +136,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_marginStart="10dp"
+            android:fitsSystemWindows="true"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

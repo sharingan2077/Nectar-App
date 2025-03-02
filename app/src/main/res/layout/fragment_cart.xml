@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/gilroy_bold"
         android:text="My Cart"
-        android:textColor="@color/black_9"
         android:textSize="20sp"
         android:layout_marginTop="@dimen/margin_top_title_fragment"
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,7 +23,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="32dp"
-        android:background="@color/gray_9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_1" />
@@ -43,7 +41,6 @@
         android:layout_width="353dp"
         android:layout_height="67dp"
         android:layout_marginBottom="110dp"
-        android:backgroundTint="@color/green"
         android:fontFamily="@font/gilroy_semibold"
         android:text="Go to Checkout"
         android:textColor="@color/white_4"

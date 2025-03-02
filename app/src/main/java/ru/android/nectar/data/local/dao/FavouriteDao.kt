@@ -19,5 +19,5 @@ interface FavouriteDao {
     fun isFavorite(userId: Int, productId: Int): Flow<Boolean>
 
     @Query("SELECT productId FROM favorite_products WHERE userId = :userId")
-    fun getFavoriteProducts(userId: Int): Flow<List<Int>>
+    fun getFavouriteProducts(userId: Int): Flow<List<Int>>
 }

@@ -22,8 +22,8 @@ class SplashScreenFragment : Fragment() {
         binding = FragmentSplashScreenBinding.inflate(inflater)
         // Используем Handler с основным потоком (UI поток)
         android.os.Handler(Looper.getMainLooper()).postDelayed({
-//            findNavController().navigate(R.id.action_splashScreenFragment_to_onBoardingFragment)
-            findNavController().navigate(R.id.action_splashScreenFragment_to_shopFragment)
+            findNavController().navigate(R.id.action_splashScreenFragment_to_onBoardingFragment)
+//            findNavController().navigate(R.id.action_splashScreenFragment_to_shopFragment)
         }, 1) // Задержка в 3 секунды
         return binding.root
 
