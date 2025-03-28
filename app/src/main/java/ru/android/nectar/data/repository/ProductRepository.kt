@@ -15,6 +15,10 @@ class ProductRepository @Inject constructor(
         return productDao.getAllProducts()
     }
 
+    suspend fun isProductTableIsEmpty(): Boolean {
+        return productDao.getProductCount() == 0
+    }
+
     fun getProductsByCategory(type: String): Flow<List<ProductEntity>> {
         return productDao.getProductsByCategory(type)
     }

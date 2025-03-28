@@ -1,13 +1,11 @@
 package ru.android.nectar.ui.favourite
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,7 +13,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.android.nectar.adapters.ProductAdapter
 import ru.android.nectar.databinding.FragmentFavouriteBinding
-import ru.android.nectar.ui.cart.CartViewModel
+import ru.android.nectar.ui.viewmodel.CartViewModel
+import ru.android.nectar.ui.viewmodel.FavouriteViewModel
 
 @AndroidEntryPoint
 class FavouriteFragment : Fragment() {

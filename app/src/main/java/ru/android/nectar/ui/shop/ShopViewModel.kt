@@ -32,6 +32,14 @@ class ShopViewModel @Inject constructor(
         }
     }
 
+    fun addProductsIfEmpty() {
+        viewModelScope.launch {
+            if (repository.isProductTableIsEmpty()) {
+                refreshProducts(dataProductList)
+            }
+        }
+    }
+
     fun refreshProducts(newProducts: List<ProductEntity>) {
         viewModelScope.launch {
             repository.refreshProducts(newProducts)

@@ -12,6 +12,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import ru.android.nectar.R
 import ru.android.nectar.adapters.ProductTypeAdapter
 import ru.android.nectar.databinding.FragmentExploreBinding
+import ru.android.nectar.ui.viewmodel.ExploreViewModel
 
 private const val TAG = "ExploreFragment"
 

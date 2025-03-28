@@ -1,4 +1,4 @@
-package ru.android.nectar
+package ru.android.nectar.di
 
 import dagger.Module
 import dagger.Provides

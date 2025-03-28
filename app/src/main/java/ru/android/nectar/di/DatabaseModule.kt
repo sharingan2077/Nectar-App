@@ -1,4 +1,4 @@
-package ru.android.nectar
+package ru.android.nectar.di
 
 import android.content.Context
 import dagger.Module

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1040777218533",
+    "project_id": "nectar-4ff3f",
+    "storage_bucket": "nectar-4ff3f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1040777218533:android:1f8121dda5d64d059cc70c",
+        "android_client_info": {
+          "package_name": "ru.android.nectar"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJ2kgKb7_JP091r79jGLuwY9YlNvdyWYs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

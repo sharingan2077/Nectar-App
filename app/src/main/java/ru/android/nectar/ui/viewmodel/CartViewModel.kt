@@ -1,4 +1,4 @@
-package ru.android.nectar.ui.cart
+package ru.android.nectar.ui.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

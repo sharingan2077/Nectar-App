@@ -1,30 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-<!--    <item-->
-<!--        android:id="@+id/shopFragment"-->
-<!--        android:icon="@drawable/ic_bottom_shop"-->
-<!--        android:title="Shop"-->
-<!--        android:iconTint="@color/bottom_nav_item_color"-->
-<!--        android:titleTextColor="@color/bottom_nav_text_color"/>-->
-<!--    <item-->
     <item
-        android:id="@+id/shopFragment"
+        android:id="@+id/menu_shop"
         android:icon="@drawable/ic_bottom_shop"
         android:title="Shop" />
     <item
-        android:id="@+id/exploreFragment"
+        android:id="@+id/menu_explore"
         android:icon="@drawable/ic_bottom_explore"
         android:title="Explore" />
     <item
-        android:id="@+id/cartFragment"
+        android:id="@+id/menu_cart"
         android:icon="@drawable/ic_bottom_cart"
         android:title="Cart" />
     <item
-        android:id="@+id/favouriteFragment"
+        android:id="@+id/menu_favourite"
         android:icon="@drawable/ic_bottom_favourite"
         android:title="Favourite" />
     <item
-        android:id="@+id/accountFragment"
+        android:id="@+id/menu_account"
         android:icon="@drawable/ic_bottom_account"
         android:title="Account" />
 </menu>
+
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
+    <!--<menu xmlns:android="http://schemas.android.com/apk/res/android">-->
+    <!--    <item-->
+    <!--        android:id="@+id/shopFragment"-->
+    <!--        android:icon="@drawable/ic_bottom_shop"-->
+    <!--        android:title="Shop" />-->
+    <!--    <item-->
+    <!--        android:id="@+id/exploreFragment"-->
+    <!--        android:icon="@drawable/ic_bottom_explore"-->
+    <!--        android:title="Explore" />-->
+    <!--    <item-->
+    <!--        android:id="@+id/cartFragment"-->
+    <!--        android:icon="@drawable/ic_bottom_cart"-->
+    <!--        android:title="Cart" />-->
+    <!--    <item-->
+    <!--        android:id="@+id/favouriteFragment"-->
+    <!--        android:icon="@drawable/ic_bottom_favourite"-->
+    <!--        android:title="Favourite" />-->
+    <!--    <item-->
+    <!--        android:id="@+id/accountFragment"-->
+    <!--        android:icon="@drawable/ic_bottom_account"-->
+    <!--        android:title="Account" />-->
+    <!--</menu>-->

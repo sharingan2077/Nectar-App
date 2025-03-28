@@ -4,8 +4,12 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.Window
+import android.view.WindowInsets
 import android.view.WindowInsetsController
+import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -31,14 +35,16 @@ class MainActivity : AppCompatActivity() {
 
         val bottomNavigationView = binding.bottomNavView
 
-
-
+        setStatusBarColor()
+        window.isNavigationBarContrastEnforced = false
         enableEdgeToEdge()
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
+//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
@@ -62,12 +68,33 @@ class MainActivity : AppCompatActivity() {
                 bottomNavigationView.visibility = View.GONE
             }
         }
-        bottomNavigationView.setupWithNavController(navController)
+//        bottomNavigationView.setupWithNavController(navController)
+        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.menu_shop -> {
+                    navController.navigate(R.id.shopFragment)
+                    true
+                }
+                R.id.menu_explore -> {
+                    navController.navigate(R.id.exploreFragment)
+                    true
+                }
+                R.id.menu_cart -> {
+                    navController.navigate(R.id.cartFragment)
+                    true
+                }
+                R.id.menu_favourite -> {
+                    navController.navigate(R.id.favouriteFragment)
+                    true
+                }
+                R.id.menu_account -> {
+                    navController.navigate(R.id.accountFragment)
+                    true
+                }
+                else -> false
+            }
+        }
 
-//        WindowCompat.setDecorFitsSystemWindows(
-//            window,
-//            false
-//        )
 
     }
 
@@ -75,4 +102,18 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
+
+    private fun setStatusBarColor() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) { // Android 15+
+            window.decorView.setOnApplyWindowInsetsListener { view, insets ->
+                val statusBarInsets = insets.getInsets(WindowInsets.Type.statusBars())
+                view.setBackgroundColor(Color.TRANSPARENT)
+                view.setPadding(0, statusBarInsets.top, 0, 0)
+                insets
+            }
+        } else {
+            window.statusBarColor = Color.TRANSPARENT
+        }
+    }
+
 }

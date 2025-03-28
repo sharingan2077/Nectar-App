@@ -6,23 +6,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.LinearLayoutCompat.OrientationMode
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.android.nectar.R
-import ru.android.nectar.adapters.ProductAdapter
 import ru.android.nectar.adapters.ProductCartAdapter
-import ru.android.nectar.adapters.ProductTypeAdapter
 import ru.android.nectar.databinding.FragmentCartBinding
-import ru.android.nectar.databinding.FragmentShopBinding
-import ru.android.nectar.ui.favourite.FavouriteViewModel
 import ru.android.nectar.ui.shop.ShopViewModel
+import ru.android.nectar.ui.viewmodel.CartViewModel
 
 private const val TAG = "CartFragment"
 

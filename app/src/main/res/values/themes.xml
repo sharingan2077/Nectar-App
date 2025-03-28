@@ -71,8 +71,11 @@
         <item name="colorSurfaceContainerHighest">@color/md_theme_surfaceContainerHighest</item>
 
 <!--        <item name="android:windowDrawsSystemBarBackgrounds">true</item>-->
-<!--        <item name="android:windowLightNavigationBar">true</item>-->
-<!--        <item name="android:navigationBarColor">@color/white</item>-->
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+<!--        <item name="android:statusBarColor">@android:color/transparent</item>-->
+
         <item name="bottomNavigationStyle">@style/CustomBottomNavigationView</item>
     </style>
 

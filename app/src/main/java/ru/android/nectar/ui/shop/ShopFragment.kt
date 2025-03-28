@@ -14,8 +14,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.android.nectar.adapters.ProductAdapter
 import ru.android.nectar.databinding.FragmentShopBinding
-import ru.android.nectar.ui.cart.CartViewModel
-import ru.android.nectar.ui.favourite.FavouriteViewModel
+import ru.android.nectar.ui.viewmodel.CartViewModel
+import ru.android.nectar.ui.viewmodel.FavouriteViewModel
 
 private const val TAG = "ShopFragment"
 
@@ -32,6 +32,7 @@ class ShopFragment : Fragment() {
     private lateinit var adapterBestSelling: ProductAdapter
 
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,13 +40,15 @@ class ShopFragment : Fragment() {
         binding = FragmentShopBinding.inflate(inflater, container, false)
 
 
-//        viewModel.refreshProducts(dataProductList)
+        viewModel.addProductsIfEmpty()
 
         setupRecyclerView()
         observeData()
 
         return binding.root
     }
+
+
 
     private fun setupRecyclerView() {
         adapterProduct = ProductAdapter(

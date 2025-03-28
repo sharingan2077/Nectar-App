@@ -13,6 +13,9 @@ interface ProductDao {
     @Query("SELECT * FROM products WHERE category = :type")
     fun getProductsByCategory(type: String): Flow<List<ProductEntity>>
 
+    @Query("SELECT COUNT(*) FROM products")
+    suspend fun getProductCount(): Int
+
     @Query("SELECT * FROM products")
     fun getAllProducts(): Flow<List<ProductEntity>>
 

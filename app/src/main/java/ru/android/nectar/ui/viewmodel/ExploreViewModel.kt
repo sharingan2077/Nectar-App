@@ -1,4 +1,4 @@
-package ru.android.nectar.ui.explore
+package ru.android.nectar.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
