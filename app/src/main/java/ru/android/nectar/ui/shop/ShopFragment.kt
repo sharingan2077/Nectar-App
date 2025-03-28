@@ -16,6 +16,7 @@ import ru.android.nectar.adapters.ProductAdapter
 import ru.android.nectar.databinding.FragmentShopBinding
 import ru.android.nectar.ui.viewmodel.CartViewModel
 import ru.android.nectar.ui.viewmodel.FavouriteViewModel
+import ru.android.nectar.ui.viewmodel.ShopViewModel
 
 private const val TAG = "ShopFragment"
 

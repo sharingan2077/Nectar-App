@@ -13,9 +13,12 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import ru.android.nectar.adapters.ProductAdapter
 import ru.android.nectar.adapters.SearchProductAdapter
 import ru.android.nectar.databinding.FragmentSearchBinding
@@ -71,7 +74,7 @@ class SearchFragment : Fragment() {
         // Логика поиска (добавить адаптер и фильтрацию)
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-//                exploreViewModel.searchProducts(s.toString())
+                exploreViewModel.searchProducts(s.toString())
 //                searchViewModel.searchProducts(s.toString())
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -83,69 +86,71 @@ class SearchFragment : Fragment() {
         binding.etSearch.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH || event?.keyCode == KeyEvent.KEYCODE_SEARCH) {
                 hideKeyboard(v)
-//                exploreViewModel.searchProducts(binding.etSearch.text.toString())
+                exploreViewModel.searchProducts(binding.etSearch.text.toString())
                 true
             } else {
                 false
             }
         }
-        binding.rvSearch.visibility = View.GONE
-        bindingLayoutOne.llNoResults.visibility = View.VISIBLE
-        bindingLayoutTwo.llError.visibility = View.GONE
+//        binding.rvSearch.visibility = View.GONE
+//        bindingLayoutOne.llNoResults.visibility = View.VISIBLE
+//        bindingLayoutTwo.llError.visibility = View.GONE
 
 
-        bindingLayoutTwo.btnRetry.setOnClickListener {
-            searchViewModel.retryLastSearch()
-        }
+//        bindingLayoutTwo.btnRetry.setOnClickListener {
+//            searchViewModel.retryLastSearch()
+//        }
 
         return binding.root
     }
 
     private fun setupRecyclerView() {
-//        adapter = ProductAdapter(
-//            onCartCheck = { product, callback ->
-//                viewLifecycleOwner.lifecycleScope.launch {
-//                    cartViewModel.isCart(1, product.id).collect { isCart ->
-//                        callback(isCart)
-//                    }
-//                }
-//            },
-//            onCartClick = { product ->
-//                cartViewModel.addCart(1, product.id)
-//            },
-//            onFavoriteCheck = { product, callback ->
-//                viewLifecycleOwner.lifecycleScope.launch {
-//                    favouriteViewModel.isFavorite(1, product.id).collect { isFav ->
-//                        callback(isFav)
-//                    }
-//                }
-//            },
-//            onFavoriteClick = { product ->
-//                favouriteViewModel.toggleFavorite(1, product.id)
-//            }
-//        )
-//
-//        binding.rvSearch.apply {
-//            layoutManager = GridLayoutManager(requireContext(), 2)
-//            adapter = this@SearchFragment.adapter
-//        }
-        searchProductAdapter = SearchProductAdapter()
+        adapter = ProductAdapter(
+            onCartCheck = { product, callback ->
+                viewLifecycleOwner.lifecycleScope.launch {
+                    cartViewModel.isCart(1, product.id).collect { isCart ->
+                        callback(isCart)
+                    }
+                }
+            },
+            onCartClick = { product ->
+                cartViewModel.addCart(1, product.id)
+            },
+            onFavoriteCheck = { product, callback ->
+                viewLifecycleOwner.lifecycleScope.launch {
+                    favouriteViewModel.isFavorite(1, product.id).collect { isFav ->
+                        callback(isFav)
+                    }
+                }
+            },
+            onFavoriteClick = { product ->
+                favouriteViewModel.toggleFavorite(1, product.id)
+            }
+        )
+
         binding.rvSearch.apply {
             layoutManager = GridLayoutManager(requireContext(), 2)
-            adapter = this@SearchFragment.searchProductAdapter
+            adapter = this@SearchFragment.adapter
         }
+
+
+//        searchProductAdapter = SearchProductAdapter()
+//        binding.rvSearch.apply {
+//            layoutManager = GridLayoutManager(requireContext(), 2)
+//            adapter = this@SearchFragment.searchProductAdapter
+//        }
 
 
 
     }
 
     private fun observeData() {
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            exploreViewModel.searchResults.collectLatest { products ->
-//                adapter.submitList(products)
-//
-//            }
-//        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            exploreViewModel.searchResults.collectLatest { products ->
+                adapter.submitList(products)
+
+            }
+        }
 //        viewLifecycleOwner.lifecycleScope.launch {
 //            searchViewModel.searchResults.collectLatest { products ->
 //                searchProductAdapter.updateData(products)

@@ -1,99 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                   xmlns:tools="http://schemas.android.com/tools"
-                                                   android:layout_width="match_parent"
-                                                   android:layout_height="match_parent"
-                                                   tools:context=".ui.explore.SearchFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.explore.SearchFragment">
 
 
     <EditText
-            android:id="@+id/et_search"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:layout_marginStart="25dp"
-            android:layout_marginTop="49dp"
-            android:layout_marginEnd="64dp"
-            android:background="@drawable/sh_gray_rounded"
-            android:fontFamily="@font/gilroy_semibold"
-            android:hint="Search Store"
-            android:imeOptions="actionSearch"
-            android:paddingStart="40dp"
-            android:singleLine="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+        android:id="@+id/et_search"
+        android:layout_width="0dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="49dp"
+        android:layout_marginEnd="64dp"
+        android:background="@drawable/sh_gray_rounded"
+        android:fontFamily="@font/gilroy_semibold"
+        android:hint="Search Store"
+        android:imeOptions="actionSearch"
+        android:paddingStart="40dp"
+        android:singleLine="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-            android:id="@+id/img_back"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="16dp"
-            android:src="@drawable/ic_back"
-            app:layout_constraintBottom_toBottomOf="@id/et_search"
-            app:layout_constraintStart_toStartOf="@id/et_search"
-            app:layout_constraintTop_toTopOf="@id/et_search"/>
+        android:id="@+id/img_back"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/ic_back"
+        app:layout_constraintBottom_toBottomOf="@id/et_search"
+        app:layout_constraintStart_toStartOf="@id/et_search"
+        app:layout_constraintTop_toTopOf="@id/et_search" />
 
     <ImageView
-            android:id="@+id/img_filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_filter"
-            app:layout_constraintBottom_toBottomOf="@id/et_search"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/et_search"
-            app:layout_constraintTop_toTopOf="@id/et_search"/>
+        android:id="@+id/img_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_filter"
+        app:layout_constraintBottom_toBottomOf="@id/et_search"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/et_search"
+        app:layout_constraintTop_toTopOf="@id/et_search" />
 
     <ImageView
-            android:id="@+id/img_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="18dp"
-            android:src="@drawable/ic_close"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/et_search"
-            app:layout_constraintEnd_toEndOf="@id/et_search"
-            app:layout_constraintTop_toTopOf="@id/et_search"/>
+        android:id="@+id/img_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="18dp"
+        android:src="@drawable/ic_close"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/et_search"
+        app:layout_constraintEnd_toEndOf="@id/et_search"
+        app:layout_constraintTop_toTopOf="@id/et_search" />
 
 
     <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_search"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="10dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_search" app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintVertical_bias="1.0"/>
+        android:id="@+id/rv_search"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_search"
+        app:layout_constraintVertical_bias="1.0" />
 
-    <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/ic_restart"
-            app:layout_constraintBottom_toBottomOf="@+id/rv_search"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_search"/>
+<!--    <ImageView-->
+<!--        android:layout_width="100dp"-->
+<!--        android:layout_height="100dp"-->
+<!--        android:src="@drawable/ic_restart"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/rv_search"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/et_search" />-->
 
-    <!-- Плейсхолдер, если нет результатов -->
-    <include
-            android:id="@+id/layout_no_results"
-            layout="@layout/layout_no_results"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/et_search"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+<!--    &lt;!&ndash; Плейсхолдер, если нет результатов &ndash;&gt;-->
+<!--    <include-->
+<!--        android:id="@+id/layout_no_results"-->
+<!--        layout="@layout/layout_no_results"-->
+<!--        android:visibility="gone"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/et_search" />-->
 
-    <!-- Плейсхолдер ошибки -->
-    <include
-            android:id="@+id/layout_error"
-            layout="@layout/layout_error"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/et_search"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+<!--    &lt;!&ndash; Плейсхолдер ошибки &ndash;&gt;-->
+<!--    <include-->
+<!--        android:id="@+id/layout_error"-->
+<!--        layout="@layout/layout_error"-->
+<!--        android:visibility="gone"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/et_search" />-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

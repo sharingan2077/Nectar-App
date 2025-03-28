@@ -1,4 +1,4 @@
-package ru.android.nectar.ui.shop
+package ru.android.nectar.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import ru.android.nectar.data.local.entity.ProductEntity
 import ru.android.nectar.data.repository.ProductRepository
+import ru.android.nectar.ui.shop.dataProductList
 import javax.inject.Inject
 
 

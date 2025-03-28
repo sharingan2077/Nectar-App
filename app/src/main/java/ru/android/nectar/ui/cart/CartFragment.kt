@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import ru.android.nectar.R
 import ru.android.nectar.adapters.ProductCartAdapter
 import ru.android.nectar.databinding.FragmentCartBinding
-import ru.android.nectar.ui.shop.ShopViewModel
+import ru.android.nectar.ui.viewmodel.ShopViewModel
 import ru.android.nectar.ui.viewmodel.CartViewModel
 
 private const val TAG = "CartFragment"
