@@ -189,6 +189,15 @@ class SearchFragment : Fragment() {
             exploreViewModel.searchResults.collectLatest { products ->
                 adapter.submitList(products)
 
+                binding.progressBar.visibility = View.GONE
+
+                if (products.isNotEmpty()) {
+                    binding.rvSearch.visibility = View.VISIBLE
+                } else {
+                    binding.rvSearch.visibility = View.GONE
+                    // Можно тут показать пустой плейсхолдер, если нужно
+                }
+
             }
         }
 //        viewLifecycleOwner.lifecycleScope.launch {
@@ -272,10 +281,23 @@ class SearchFragment : Fragment() {
         }
     }
 
+//    private fun searchDebounce() {
+//        handler.removeCallbacks(searchRunnable)
+//        handler.postDelayed(searchRunnable, 2000L) // 2 секунды
+//    }
     private fun searchDebounce() {
         handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, 2000L) // 2 секунды
+
+        // Показываем прогресс, скрываем всё остальное
+        binding.progressBar.visibility = View.VISIBLE
+        binding.rvSearch.visibility = View.GONE
+        binding.rvSearchHistory.visibility = View.GONE
+        binding.tvHistoryTitle.visibility = View.GONE
+        binding.imgClearHistory.visibility = View.GONE
+
+        handler.postDelayed(searchRunnable, 2000L)
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
