@@ -28,10 +28,52 @@ val dataProductList = listOf(
         category = "exclusive",
         productType = "vegetable"
     ),
-    ProductEntity(imageRes = R.drawable.img_egg_noodles, name = "Egg Noodles", spec = "2L, Price", price = "$15.99", category = "best selling", productType = "egg"),
-    ProductEntity(imageRes = R.drawable.img_egg_noodles_2, name = "Egg Noodles", spec = "2L, Price", price = "$12.99", category = "best selling", productType = "egg"),
-    ProductEntity(imageRes = R.drawable.img_egg_red, name = "Egg Chicken Red", spec = "4pcs, Price", price = "$1.99", category = "best selling", productType = "egg"),
-    ProductEntity(imageRes = R.drawable.img_egg_pasta, name = "Egg Pasta", spec = "30gm, Price", price = "$15.99", category = "best selling", productType = "egg"),
-    ProductEntity(imageRes = R.drawable.img_egg_white, name = "Egg Chicken White", spec = "180g, Price", price = "$1.50", category = "best selling", productType = "egg"),
-    ProductEntity(imageRes = R.drawable.img_egg_mayonnais, name = "Egg Mayonnaise", spec = "300g, Price", price = "$4.99", category = "best selling", productType = "egg"),
+    ProductEntity(
+        imageRes = R.drawable.img_egg_noodles,
+        name = "Egg Noodles",
+        spec = "2L, Price",
+        price = "$15.99",
+        category = "best selling",
+        productType = "egg"
+    ),
+    ProductEntity(
+        imageRes = R.drawable.img_egg_noodles_2,
+        name = "Egg Noodles",
+        spec = "2L, Price",
+        price = "$12.99",
+        category = "best selling",
+        productType = "egg"
+    ),
+    ProductEntity(
+        imageRes = R.drawable.img_egg_red,
+        name = "Egg Chicken Red",
+        spec = "4pcs, Price",
+        price = "$1.99",
+        category = "best selling",
+        productType = "egg"
+    ),
+    ProductEntity(
+        imageRes = R.drawable.img_egg_pasta,
+        name = "Egg Pasta",
+        spec = "30gm, Price",
+        price = "$15.99",
+        category = "best selling",
+        productType = "egg"
+    ),
+    ProductEntity(
+        imageRes = R.drawable.img_egg_white,
+        name = "Egg Chicken White",
+        spec = "180g, Price",
+        price = "$1.50",
+        category = "best selling",
+        productType = "egg"
+    ),
+    ProductEntity(
+        imageRes = R.drawable.img_egg_mayonnais,
+        name = "Egg Mayonnaise",
+        spec = "300g, Price",
+        price = "$4.99",
+        category = "best selling",
+        productType = "egg"
+    ),
 )

@@ -20,6 +20,7 @@ class ProductAdapter(
     private val onFavoriteClick: (ProductEntity) -> Unit,
     private val onCartCheck: (ProductEntity, (Boolean) -> Unit) -> Unit, // Запрос избранного
     private val onCartClick: (ProductEntity) -> Unit,
+    private val onProductClick: (ProductEntity) -> Unit = {}//Добавление в историю
 ) : ListAdapter<ProductEntity, ProductAdapter.ProductViewHolder>(ProductDiffCallback()) {
 
     inner class ProductViewHolder(private val binding: ItemProductBinding) :
@@ -57,6 +58,10 @@ class ProductAdapter(
             binding.imgFavourite.setOnClickListener {
                 Log.d(TAG, "adapter onFavouriteClick -> ${product.name}")
                 onFavoriteClick(product)
+            }
+
+            binding.root.setOnClickListener {
+                onProductClick(product)
             }
         }
     }

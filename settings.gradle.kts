@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Nectar"
 include(":app")
- 
+include(":ktorServer")

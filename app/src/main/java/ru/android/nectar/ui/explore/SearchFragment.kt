@@ -2,6 +2,8 @@ package ru.android.nectar.ui.explore
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
@@ -28,6 +30,9 @@ import ru.android.nectar.ui.viewmodel.CartViewModel
 import ru.android.nectar.ui.viewmodel.FavouriteViewModel
 import ru.android.nectar.ui.viewmodel.ExploreViewModel
 import ru.android.nectar.ui.viewmodel.SearchViewModel
+import androidx.core.content.edit
+import androidx.recyclerview.widget.LinearLayoutManager
+import ru.android.nectar.adapters.SearchHistoryAdapter
 
 private const val TAG = "SearchFragment"
 
@@ -45,6 +50,16 @@ class SearchFragment : Fragment() {
 
     private lateinit var bindingLayoutOne: LayoutNoResultsBinding
     private lateinit var bindingLayoutTwo: LayoutErrorBinding
+
+    private lateinit var historyAdapter: SearchHistoryAdapter
+
+
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val searchRunnable = Runnable {
+        val query = binding.etSearch.text.toString()
+        exploreViewModel.searchProducts(query)
+    }
 
 
 
@@ -74,7 +89,8 @@ class SearchFragment : Fragment() {
         // Логика поиска (добавить адаптер и фильтрацию)
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                exploreViewModel.searchProducts(s.toString())
+                searchDebounce()
+//                exploreViewModel.searchProducts(s.toString())
 //                searchViewModel.searchProducts(s.toString())
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -101,6 +117,27 @@ class SearchFragment : Fragment() {
 //            searchViewModel.retryLastSearch()
 //        }
 
+        // Инициализация адаптера
+        historyAdapter = SearchHistoryAdapter { query ->
+            binding.etSearch.setText(query)
+            exploreViewModel.searchProducts(query)
+            hideKeyboard(binding.etSearch)
+        }
+
+        binding.rvSearchHistory.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvSearchHistory.adapter = historyAdapter
+
+        binding.etSearch.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && getHistory().isNotEmpty()) {
+                showHistory()
+            }
+        }
+
+        binding.imgClearHistory.setOnClickListener {
+            clearHistory()
+            showHistory()
+        }
+
         return binding.root
     }
 
@@ -125,6 +162,9 @@ class SearchFragment : Fragment() {
             },
             onFavoriteClick = { product ->
                 favouriteViewModel.toggleFavorite(1, product.id)
+            },
+            onProductClick = { product ->
+                saveToHistory(product.name)
             }
         )
 
@@ -194,5 +234,56 @@ class SearchFragment : Fragment() {
         val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.etSearch.windowToken, 0)
     }
+
+
+    private fun getHistory(): List<String> {
+        val prefs = requireContext().getSharedPreferences("search_history", Context.MODE_PRIVATE)
+        val set = prefs.getStringSet("history", emptySet()) ?: emptySet()
+        return set.toMutableList().sortedByDescending { it } // Последние сверху
+    }
+
+    private fun saveToHistory(query: String) {
+        if (query.isBlank()) return
+        val prefs = requireContext().getSharedPreferences("search_history", Context.MODE_PRIVATE)
+        val history = getHistory().toMutableList()
+        history.remove(query) // убираем, чтобы не было дубликатов
+        history.add(0, query) // добавляем в начало
+        if (history.size > 10) {
+            history.removeAt(history.lastIndex)
+        }
+        prefs.edit() { putStringSet("history", history.toSet()) }
+    }
+
+    private fun clearHistory() {
+        val prefs = requireContext().getSharedPreferences("search_history", Context.MODE_PRIVATE)
+        prefs.edit() { clear() }
+    }
+    private fun showHistory() {
+        val history = getHistory()
+        if (history.isNotEmpty()) {
+            binding.rvSearchHistory.visibility = View.VISIBLE
+            binding.tvHistoryTitle.visibility = View.VISIBLE
+            binding.imgClearHistory.visibility = View.VISIBLE
+            historyAdapter.submitList(history)
+        } else {
+            binding.rvSearchHistory.visibility = View.GONE
+            binding.tvHistoryTitle.visibility = View.GONE
+            binding.imgClearHistory.visibility = View.GONE
+        }
+    }
+
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, 2000L) // 2 секунды
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        handler.removeCallbacks(searchRunnable)
+    }
+
+
+
+
 
 }
