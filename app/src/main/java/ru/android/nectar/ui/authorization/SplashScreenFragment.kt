@@ -20,32 +20,26 @@ class SplashScreenFragment : Fragment() {
     private lateinit var binding: FragmentSplashScreenBinding
     private val authViewModel: AuthViewModel by activityViewModels()
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentSplashScreenBinding.inflate(inflater)
-        // Используем Handler с основным потоком (UI поток)
+        binding = FragmentSplashScreenBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        authViewModel.getCurrentUser() // Получаем текущего пользователя
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-//        findNavController().navigate(R.id.action_splashScreenFragment_to_shopFragment)
-
-
-        lifecycleScope.launch {
-            authViewModel.currentUser.observe(viewLifecycleOwner) { user ->
-                if (user != null) {
-                    // Если пользователь авторизован, переходим в ShopFragment
-                    findNavController().navigate(R.id.action_splashScreenFragment_to_shopFragment)
-                } else {
-                    // Если пользователь не авторизован, переходим в NumberFragment
-                    findNavController().navigate(R.id.action_splashScreenFragment_to_onBoardingFragment)
-                }
+        authViewModel.isAuthenticated.observe(viewLifecycleOwner) { isAuth ->
+            if (isAuth) {
+                // Пользователь уже авторизован — идём в магазин
+                findNavController().navigate(R.id.action_splashScreenFragment_to_shopFragment)
+            } else {
+                // Пользователь не авторизован — идём в onboarding/login
+                findNavController().navigate(R.id.action_splashScreenFragment_to_onBoardingFragment)
             }
         }
-        return binding.root
 
-}
-
+    }
 }

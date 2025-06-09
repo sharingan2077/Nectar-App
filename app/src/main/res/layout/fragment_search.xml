@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.explore.SearchFragment">
 
-
+    <!-- Существующие элементы остаются без изменений -->
     <EditText
         android:id="@+id/et_search"
         android:layout_width="0dp"
@@ -16,7 +16,7 @@
         android:layout_marginEnd="64dp"
         android:background="@drawable/sh_gray_rounded"
         android:fontFamily="@font/gilroy_semibold"
-        android:hint="Search Store"
+        android:hint="@string/search_store"
         android:imeOptions="actionSearch"
         android:paddingStart="40dp"
         android:singleLine="true"
@@ -55,7 +55,6 @@
         app:layout_constraintEnd_toEndOf="@id/et_search"
         app:layout_constraintTop_toTopOf="@id/et_search" />
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_search"
         android:layout_width="match_parent"
@@ -68,24 +67,39 @@
         app:layout_constraintTop_toBottomOf="@+id/rv_search_history"
         app:layout_constraintVertical_bias="1.0" />
 
-
     <TextView
         android:id="@+id/tv_history_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
         android:layout_marginTop="16dp"
-        android:text="История поиска"
+        android:text="@string/search_history"
         android:textSize="16sp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_search"
         tools:visibility="visible" />
 
+    <ImageView
+        android:id="@+id/img_clear_history"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:contentDescription="TODO"
+        android:src="@drawable/ic_delete"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_history_title"
+        app:layout_constraintStart_toEndOf="@+id/tv_history_title"
+        app:layout_constraintTop_toTopOf="@+id/tv_history_title"
+        tools:visibility="visible" />
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_search_history"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:maxHeight="130dp"
+        android:minHeight="20dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="25dp"
         android:visibility="gone"
@@ -94,63 +108,137 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_history_title"
         tools:visibility="visible" />
 
-    <ImageView
-        android:id="@+id/img_clear_history"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="TODO"
-        android:src="@drawable/ic_delete"
-        android:layout_marginStart="15dp"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_history_title"
-        app:layout_constraintStart_toEndOf="@+id/tv_history_title"
-        app:layout_constraintTop_toTopOf="@+id/tv_history_title" />
-
-
-
-    <!--    <ImageView-->
-    <!--        android:layout_width="100dp"-->
-    <!--        android:layout_height="100dp"-->
-    <!--        android:src="@drawable/ic_restart"-->
-    <!--        app:layout_constraintBottom_toBottomOf="@+id/rv_search"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/et_search" />-->
-
-    <!--    &lt;!&ndash; Плейсхолдер, если нет результатов &ndash;&gt;-->
-    <!--    <include-->
-    <!--        android:id="@+id/layout_no_results"-->
-    <!--        layout="@layout/layout_no_results"-->
-    <!--        android:visibility="gone"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@id/et_search" />-->
-
-    <!--    &lt;!&ndash; Плейсхолдер ошибки &ndash;&gt;-->
-    <!--    <include-->
-    <!--        android:id="@+id/layout_error"-->
-    <!--        layout="@layout/layout_error"-->
-    <!--        android:visibility="gone"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@id/et_search" />-->
-
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/pb_find_products"
         android:layout_width="44dp"
         android:layout_height="44dp"
-        android:indeterminateTint="@color/black"
-        android:visibility="gone"
         android:layout_marginBottom="180dp"
+        android:indeterminateTint="@color/md_theme_primary"
+        android:visibility="gone"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/et_search"
         tools:visibility="visible" />
 
+    <!-- Плейсхолдер для начального состояния -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/initial_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_search">
 
+        <ImageView
+            android:id="@+id/img_initial"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/img_start_find"
+            app:layout_constraintBottom_toTopOf="@id/initial_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/initial_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Начните искать продукты"
+            android:fontFamily="@font/gilroy_medium"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/img_initial" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Плейсхолдер для пустых результатов -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/empty_results_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_search">
+
+        <ImageView
+            android:id="@+id/img_not_found"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/img_not_found"
+            app:layout_constraintBottom_toTopOf="@id/empty_results_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/empty_results_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Таких продуктов не найдено :("
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/img_not_found" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Плейсхолдер для ошибки -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/error_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_search">
+
+        <ImageView
+            android:id="@+id/img_error"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/img_error"
+            app:layout_constraintBottom_toTopOf="@id/error_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/error_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Произошла ошибка"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@id/retry_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/img_error" />
+
+        <Button
+            android:id="@+id/retry_button"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:text="Ещё раз!"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/error_text" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

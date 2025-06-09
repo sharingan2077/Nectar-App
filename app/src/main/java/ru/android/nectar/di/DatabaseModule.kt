@@ -10,7 +10,9 @@ import ru.android.nectar.data.local.AppDatabase
 import ru.android.nectar.data.local.dao.CartDao
 import ru.android.nectar.data.local.dao.ExploreDao
 import ru.android.nectar.data.local.dao.FavouriteDao
+import ru.android.nectar.data.local.dao.OrderDao
 import ru.android.nectar.data.local.dao.ProductDao
+import ru.android.nectar.data.local.dao.SearchHistoryDao
 import javax.inject.Singleton
 
 @Module
@@ -45,5 +47,17 @@ object DatabaseModule {
     @Singleton
     fun provideExploreDao(appDatabase: AppDatabase): ExploreDao {
         return appDatabase.exploreDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideOrderDao(appDatabase: AppDatabase): OrderDao {
+        return appDatabase.orderDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideSearchHistoryDao(appDatabase: AppDatabase): SearchHistoryDao {
+        return appDatabase.searchHistoryDao()
     }
 }

@@ -75,6 +75,13 @@
         <action
             android:id="@+id/action_exploreFragment_to_searchFragment"
             app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_exploreFragment_to_productTypeFragment"
+            app:destination="@id/productTypeFragment" >
+            <argument
+                android:name="categoryName"
+                app:argType="string" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/cartFragment"
@@ -100,12 +107,22 @@
             app:destination="@id/onBoardingFragment"
             app:popUpTo="@id/accountFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_accountFragment_to_aboutFragment"
+            app:destination="@id/aboutFragment" />
+        <action
+            android:id="@+id/action_accountFragment_to_orderFragment"
+            app:destination="@id/orderFragment" />
     </fragment>
     <fragment
         android:id="@+id/orderAcceptedFragment"
         android:name="ru.android.nectar.ui.cart.OrderAcceptedFragment"
         android:label="fragment_order_accepted"
-        tools:layout="@layout/fragment_order_accepted" />
+        tools:layout="@layout/fragment_order_accepted" >
+        <action
+            android:id="@+id/action_orderAcceptedFragment_to_shopFragment"
+            app:destination="@id/shopFragment" />
+    </fragment>
     <fragment
         android:id="@+id/searchFragment"
         app:enterAnim="@anim/slide_in_right"
@@ -135,5 +152,27 @@
         <action
             android:id="@+id/action_signUpFragment_to_logInFragment"
             app:destination="@id/logInFragment" />
+        <action
+            android:id="@+id/action_signUpFragment_to_shopFragment"
+            app:destination="@id/shopFragment" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_about"
+        android:id="@+id/aboutFragment"
+        android:name="ru.android.nectar.ui.account.AboutFragment"
+        android:label="AboutFragment" />
+    <fragment
+        android:id="@+id/productTypeFragment"
+        android:name="ru.android.nectar.ui.explore.ProductTypeFragment"
+        android:label="fragment_product_type"
+        tools:layout="@layout/fragment_product_type" />
+    <fragment
+        tools:layout="@layout/fragment_order"
+        android:id="@+id/orderFragment"
+        android:name="ru.android.nectar.ui.order.OrderFragment"
+        android:label="OrderFragment" >
+        <action
+            android:id="@+id/action_orderFragment_to_shopFragment"
+            app:destination="@id/shopFragment" />
     </fragment>
 </navigation>

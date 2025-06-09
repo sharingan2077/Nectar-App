@@ -26,38 +26,38 @@ class FavouriteViewModel @Inject constructor(private val repository: FavouriteRe
     private val _favouriteProducts = MutableStateFlow<List<ProductEntity>>(emptyList())  // StateFlow для списка продуктов
     val favouriteProducts: StateFlow<List<ProductEntity>> = _favouriteProducts
 
-    fun isFavorite(userId: Int, productId: Int): Flow<Boolean> = repository.isFavorite(userId, productId)
+    fun isFavorite(productId: Int): Flow<Boolean> = repository.isFavorite(productId)
 
-    fun getFavouriteProducts(userId: Int): Flow<List<Int>> = repository.getFavouriteProducts(userId)
+    fun getFavouriteProducts(): Flow<List<Int>> = repository.getFavouriteProductIds()
 
-    fun getFavoriteProductEntities(userId: Int): Flow<List<ProductEntity>> = flow {
-        val productIds = repository.getFavouriteProducts(userId).first() // Получаем список избранных ID
+    fun getFavoriteProductEntities(): Flow<List<ProductEntity>> = flow {
+        val productIds = repository.getFavouriteProductIds().first() // Получаем список избранных ID
 
         val products = productIds.mapNotNull { id -> repository.getProductById(id).firstOrNull() }
         emit(products)
 
     }.flowOn(Dispatchers.IO) // Запускаем на IO-потоке
 
-    fun loadFavouriteProducts(userId: Int) {
+    fun loadFavouriteProducts() {
         viewModelScope.launch {
-            val productIds = repository.getFavouriteProducts(userId).first()
+            val productIds = repository.getFavouriteProductIds().first()
             val products = productIds.mapNotNull { id -> repository.getProductById(id).firstOrNull() }
             _favouriteProducts.value = products // Обновляем StateFlow
         }
     }
 
-    fun toggleFavorite(userId: Int, productId: Int) {
+    fun toggleFavorite(productId: Int) {
         viewModelScope.launch {
-            Log.d(TAG, "toggleFavourite, userId-$userId, productId-$productId")
-            val isFav = repository.isFavorite(userId, productId).first()
+            Log.d(TAG, "toggleFavourite, productId-$productId")
+            val isFav = repository.isFavorite(productId).first()
             if (isFav) {
                 Log.d(TAG, "toggleFavourite product isNotFav")
-                repository.removeFavorite(userId, productId)
+                repository.removeFavorite(productId)
             } else {
                 Log.d(TAG, "toggleFavourite product isFav")
-                repository.addFavorite(FavouriteEntity(userId, productId))
+                repository.addFavorite(productId)
             }
-            loadFavouriteProducts(1)
+            loadFavouriteProducts()
         }
     }
 }

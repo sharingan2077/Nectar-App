@@ -10,7 +10,18 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
+
+        <ProgressBar
+            android:id="@+id/pb_products"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
 
         <ImageView
             android:id="@+id/img_1"
@@ -33,7 +44,7 @@
 
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:src="@drawable/ic_geo" />
 
             <TextView
@@ -41,48 +52,53 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:fontFamily="@font/gilroy_semibold"
-                android:text="Moscow, Russia"
+                android:text="@string/moscow_russia"
                 android:textSize="18sp" />
         </LinearLayout>
 
-        <EditText
-            android:id="@+id/et_explore"
-            android:layout_width="0dp"
-            android:layout_height="52dp"
-            android:layout_marginStart="25dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="25dp"
-            android:background="@drawable/sh_gray_rounded"
-            android:drawableLeft="@drawable/ic_search"
-            android:drawablePadding="10dp"
-            android:fontFamily="@font/gilroy_semibold"
-            android:hint="Search Store"
-            android:paddingStart="15dp"
+
+        <!-- ViewPager2 для баннеров -->
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/bannerViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/container_1" />
 
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="0dp"
+        <!-- Индикатор (точки) -->
+        <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+            android:id="@+id/dotsIndicator"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:src="@drawable/banner"
-            app:layout_constraintEnd_toEndOf="@+id/et_explore"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/et_explore"
-            app:layout_constraintTop_toBottomOf="@+id/et_explore" />
+            android:layout_gravity="center_horizontal"
+            app:dotsColor="@android:color/darker_gray"
+            app:dotsSpacing="2dp"
+            app:dotsSize="10dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="@id/bannerViewPager"
+            app:layout_constraintEnd_toEndOf="@id/bannerViewPager"
+            app:layout_constraintStart_toStartOf="@id/bannerViewPager"
+            app:selectedDotColor="@color/md_theme_primary" />
 
         <TextView
             android:id="@+id/textView8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="18dp"
             android:fontFamily="@font/gilroy_semibold"
-            android:text="Exclusive Offer"
+            android:paddingStart="16dp"
+            android:text="@string/exclusive_offer"
             android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@+id/et_explore"
-            app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bannerViewPager" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_exclusive"
@@ -98,9 +114,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/gilroy_semibold"
-            android:text="Best Selling"
+            android:paddingStart="16dp"
+            android:text="@string/best_selling"
             android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@+id/et_explore"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rv_exclusive" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -117,32 +134,29 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/gilroy_semibold"
-            android:text="Categories"
+            android:paddingStart="16dp"
+            android:text="@string/all"
             android:textSize="24sp"
-            app:layout_constraintStart_toStartOf="@+id/et_explore"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rv_best_selling" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_сategories"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_all"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:fitsSystemWindows="true"
-            android:orientation="horizontal"
+            android:paddingBottom="35dp"
+            app:layout_constraintBottom_toTopOf="@+id/v_helper_1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rv_сategories" />
+            app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
-
+        <View
+            android:id="@+id/v_helper_1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

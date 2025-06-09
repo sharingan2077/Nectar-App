@@ -20,68 +20,95 @@ import javax.inject.Inject
 
 private const val TAG = "CartViewModel"
 
+data class CartProduct(
+    val product: ProductEntity,
+    val count: Int
+)
+
 @HiltViewModel
 class CartViewModel @Inject constructor(private val repository: CartRepository) : ViewModel() {
 
-    private val _cartProducts = MutableStateFlow<List<ProductEntity>>(emptyList())  // StateFlow для списка продуктов
-    val cartProducts: StateFlow<List<ProductEntity>> = _cartProducts
+    private val _cartProducts = MutableStateFlow<List<CartProduct>>(emptyList())
+    val cartProducts: StateFlow<List<CartProduct>> = _cartProducts
 
-    fun isCart(userId: Int, productId: Int): Flow<Boolean> = repository.isCart(userId, productId)
+    fun isCart(productId: Int): Flow<Boolean> = repository.isCart(productId)
 
-    fun getCartProducts(userId: Int): Flow<List<Int>> = repository.getCartProducts(userId)
+//    fun getCartProducts(): Flow<List<Int>> = repository.getCartProducts()
 
-    fun getCartProduct(userId : Int, productId: Int) : Flow<CartEntity> = repository.getCartProduct(userId, productId)
+    fun getCartProduct(productId: Int): Flow<CartEntity?> = repository.getCartProduct(productId)
 
-    fun getCartProductEntities(userId: Int): Flow<List<ProductEntity>> = flow {
-        val productIds = repository.getCartProducts(userId).first() // Получаем список избранных ID
-
+//    fun getCartProductEntities(): Flow<List<ProductEntity>> = flow {
+//        val productIds = repository.getCartProductIds().first()
 //        val products = productIds.mapNotNull { id -> repository.getProductById(id).firstOrNull() }
-        val products = productIds.mapNotNull { id -> repository.getProductById(id).firstOrNull() }
-        _cartProducts.value = products // Обновляем StateFlow
+//        _cartProducts.value = products
+//        emit(products)
+//    }.flowOn(Dispatchers.IO)
 
-        emit(products)
-
-    }.flowOn(Dispatchers.IO) // Запускаем на IO-потоке
-
-
-    fun loadCartProducts(userId: Int) {
+    // Обновляем метод loadCartProducts
+    fun loadCartProducts() {
         viewModelScope.launch {
-            val productIds = repository.getCartProducts(userId).first()
-            val products = productIds.mapNotNull { id -> repository.getProductById(id).firstOrNull() }
-            _cartProducts.value = products // Обновляем StateFlow
+            val productIds = repository.getCartProductIds().first()
+            val productsWithCount = productIds.mapNotNull { id ->
+                val product = repository.getProductById(id).firstOrNull()
+                val count = repository.getCartProduct(id).firstOrNull()?.count ?: 0
+                if (product != null && count > 0) {
+                    CartProduct(product, count)
+                } else {
+                    null
+                }
+            }
+            _cartProducts.value = productsWithCount
+        }
+    }
+    // Добавляем метод для получения общей суммы
+    fun calculateTotalAmount(): Double {
+        return _cartProducts.value.sumOf { item ->
+            item.product.getPriceDouble() * item.count
         }
     }
 
-    fun addCart(userId: Int, productId: Int) {
+    fun addCart(productId: Int) {
         viewModelScope.launch {
-            Log.d(TAG, "addCart, userId-$userId, productId-$productId")
-            val isCart = repository.isCart(userId, productId).first()
+            repository.addProductToCart(productId)
+        }
+    }
+
+    fun toggleCart(productId: Int) {
+        viewModelScope.launch {
+            val isCart = repository.isCart(productId).first()
             if (isCart) {
-                Log.d(TAG, "toggleCart product isNotCart")
-                repository.removeCart(userId, productId)
+                repository.removeProductFromCart(productId)
             } else {
-                Log.d(TAG, "toggleCart product isCart")
-                repository.addCart(CartEntity(userId, productId, 1))
+//                repository.addCart(CartEntity(productId, count = 1))
             }
         }
     }
 
-    fun incrementCount(userId: Int, productId: Int) {
+    fun incrementCount(productId: Int) {
         viewModelScope.launch {
-            repository.incrementCount(userId, productId)
+            repository.increaseProductCount(productId)
         }
     }
 
-    fun decrementCount(userId: Int, productId: Int) {
+    fun decrementCount(productId: Int) {
         viewModelScope.launch {
-            repository.decrementCount(userId, productId)
+            repository.decreaseProductCount(productId)
+            loadCartProducts()
         }
     }
 
-    fun removeCart(userId: Int, productId: Int) {
-         viewModelScope.launch {
-             repository.removeCart(userId, productId)
-             loadCartProducts(userId)
-         }
+    fun removeCart(productId: Int) {
+        viewModelScope.launch {
+            repository.removeProductFromCart(productId)
+            loadCartProducts()
+        }
     }
+
+    fun clearCart() {
+        viewModelScope.launch {
+            repository.clearCart()
+            loadCartProducts() // Обновляем список после очистки
+        }
+    }
+
 }

@@ -12,6 +12,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import ru.android.nectar.R
 import ru.android.nectar.adapters.ProductTypeAdapter
 import ru.android.nectar.databinding.FragmentExploreBinding
+import ru.android.nectar.example.dataProductTypesList
 import ru.android.nectar.ui.viewmodel.ExploreViewModel
 
 private const val TAG = "ExploreFragment"
@@ -22,15 +23,17 @@ class ExploreFragment : Fragment() {
     private lateinit var adapter: ProductTypeAdapter
     private val exploreViewModel: ExploreViewModel by viewModels()
 
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentExploreBinding.inflate(inflater)
 
-        adapter = ProductTypeAdapter(dataProductTypesList)
+        adapter = ProductTypeAdapter(dataProductTypesList) { categoryName ->
+            val action = ExploreFragmentDirections.actionExploreFragmentToProductTypeFragment(categoryName)
+            findNavController().navigate(action)
+        }
+
         binding.rvCategories.apply {
             layoutManager = GridLayoutManager(requireContext(), 2)
             adapter = this@ExploreFragment.adapter
@@ -43,8 +46,5 @@ class ExploreFragment : Fragment() {
         }
 
         return binding.root
-
-
     }
-
 }

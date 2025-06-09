@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
+import ru.android.nectar.R
 import ru.android.nectar.databinding.FragmentOrderAcceptedBinding
 
 
@@ -17,6 +19,9 @@ class OrderAcceptedFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentOrderAcceptedBinding.inflate(inflater)
+        binding.tvReturnToHome.setOnClickListener {
+            findNavController().navigate(R.id.action_orderAcceptedFragment_to_shopFragment)
+        }
         return binding.root
     }
 

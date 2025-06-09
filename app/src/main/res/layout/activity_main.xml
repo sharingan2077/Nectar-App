@@ -31,28 +31,4 @@
         android:background="@color/background"
         app:menu="@menu/bottom_nav_menu" />
 
-<!--    app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"-->
-
-<!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
-<!--        android:id="@+id/bottom_nav_view"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:labelVisibilityMode="labeled"-->
-<!--        app:itemActiveIndicatorStyle="@style/Widget.Design.BottomNavigationView"-->
-<!--        app:menu="@menu/bottom_nav_menu"-->
-<!--        style="@style/MyBottomNavStyle"/>-->
-<!--    -->
-
-    <!--    app:itemIconTint="@color/bottom_nav_item_color"-->
-<!--    app:itemRippleColor="@android:color/transparent"-->
-<!--    android:background="?attr/colorSurface"-->
-<!--    android:layout_gravity="bottom"-->
-<!--    app:itemPaddingBottom="20dp"-->
-<!--    app:itemPaddingTop="20dp"-->
-<!--    android:paddingTop="0dp"-->
-<!--    android:paddingBottom="0dp"-->
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

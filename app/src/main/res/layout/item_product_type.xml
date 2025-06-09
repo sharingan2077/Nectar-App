@@ -15,10 +15,10 @@
 
         <ImageView
             android:id="@+id/img_product_type"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:src="@drawable/img_category_bakery"
+            android:layout_width="125dp"
+            android:layout_height="125dp"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/img_type_fruit"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -30,7 +30,7 @@
             android:fontFamily="@font/gilroy_bold"
             android:gravity="center"
             android:lineHeight="22dp"
-            android:text="Frash Fruits $ Vegetable"
+            android:text="Фрукты"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -32,6 +32,17 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+//        Для скринов экрана скрыть нижнюю панель навигации и статус бар
+//        window.decorView.systemUiVisibility = (
+//                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+//                        or View.SYSTEM_UI_FLAG_FULLSCREEN       // скрывает статус-бар (верхний)
+//                        or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION  // скрывает нижнюю панель навигации
+//                        or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                        or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+//                        or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//                )
+
+
 
         val bottomNavigationView = binding.bottomNavView
 

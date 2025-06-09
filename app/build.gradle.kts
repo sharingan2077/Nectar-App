@@ -53,6 +53,18 @@ android {
 }
 
 dependencies {
+
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
+
+    implementation("androidx.viewpager2:viewpager2:1.1.0")
+    implementation("com.tbuonomo:dotsindicator:5.0")
+
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
+    val lottieVersion = "3.4.0"
+    implementation("com.airbnb.android:lottie:$lottieVersion")
+
     val kotlin_version = "2.0.0"
     implementation("org.jetbrains.kotlin:kotlin-metadata-jvm:$kotlin_version")
 
@@ -60,12 +72,6 @@ dependencies {
 
     //Glide
     implementation("com.github.bumptech.glide:glide:4.16.0")
-
-    //Firebase
-    implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
-    implementation("com.google.firebase:firebase-auth")
-//    implementation("com.google.android.gms:play-services-auth")
-//    implementation("com.google.android.gms:play-services-auth-api-phone")
 
     //Hilt
     implementation(libs.hilt.android)

@@ -27,8 +27,14 @@ class AccountFragment : Fragment() {
         binding = FragmentAccountBinding.inflate(inflater)
 
         binding.btnLogout.setOnClickListener {
-            authViewModel.signOut()
+            authViewModel.logout()
             findNavController().navigate(R.id.action_accountFragment_to_onBoardingFragment)
+        }
+        binding.tvAbout.setOnClickListener {
+            findNavController().navigate(R.id.action_accountFragment_to_aboutFragment)
+        }
+        binding.tvOrders.setOnClickListener {
+            findNavController().navigate(R.id.action_accountFragment_to_orderFragment)
         }
 
         //Практика 3
@@ -38,6 +44,12 @@ class AccountFragment : Fragment() {
         themeToggle.setImageResource(
             if (app.darkTheme) R.drawable.ic_sun else R.drawable.ic_moon
         )
+        val tintColor = if (app.darkTheme) {
+            requireContext().getColor(R.color.yellow) // создадим этот цвет
+        } else {
+            requireContext().getColor(R.color.black_5)  // например, серый/чёрный
+        }
+        themeToggle.setColorFilter(tintColor)
 
         themeToggle.setOnClickListener {
             val newTheme = !app.darkTheme

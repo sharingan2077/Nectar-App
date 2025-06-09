@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -37,29 +38,40 @@ class FavouriteFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         observeData()
+
+        binding.btnAddAllToCart.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.loadFavouriteProducts()
+                val favouriteProducts = viewModel.favouriteProducts.value
+                favouriteProducts.forEach { product ->
+                    cartViewModel.addCart(product.id)
+                }
+            }
+            Toast.makeText(requireContext(), "Избранные товары добавлены в корзину", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun setupRecyclerView() {
         adapter = ProductAdapter(
             onCartCheck = { product, callback ->
                 viewLifecycleOwner.lifecycleScope.launch {
-                    cartViewModel.isCart(1, product.id).collect { isCart ->
+                    cartViewModel.isCart(product.id).collect { isCart ->
                         callback(isCart)
                     }
                 }
             },
             onCartClick = { product ->
-                cartViewModel.addCart(1, product.id)
+                cartViewModel.addCart(product.id)
             },
             onFavoriteCheck = { product, callback ->
                 viewLifecycleOwner.lifecycleScope.launch {
-                    viewModel.isFavorite(1, product.id).collect { isFav ->
+                    viewModel.isFavorite(product.id).collect { isFav ->
                         callback(isFav)
                     }
                 }
             },
             onFavoriteClick = { product ->
-                viewModel.toggleFavorite(1, product.id)
+                viewModel.toggleFavorite(product.id)
             }
         )
 
@@ -71,7 +83,7 @@ class FavouriteFragment : Fragment() {
     }
 
     private fun observeData() {
-        viewModel.loadFavouriteProducts(1)
+        viewModel.loadFavouriteProducts()
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.favouriteProducts.collectLatest { products ->
                 adapter.submitList(products)

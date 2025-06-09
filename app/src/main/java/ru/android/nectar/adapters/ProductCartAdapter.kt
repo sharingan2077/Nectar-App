@@ -5,9 +5,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import ru.android.nectar.R
 import ru.android.nectar.data.local.entity.ProductEntity
 import ru.android.nectar.databinding.ItemProductBinding
 import ru.android.nectar.databinding.ItemProductCartBinding
+import ru.android.nectar.utils.getDrawableIdByName
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -28,21 +30,25 @@ class ProductCartAdapter(
             Log.d(TAG, "bind $product")
             binding.tvName.text = product.name
             binding.tvSpec.text = product.spec
-            binding.imgProduct.setImageResource(product.imageRes)
+            val resId = getDrawableIdByName(binding.root.context, product.imageName)
+            binding.imgProduct.setImageResource(if (resId != 0) resId else R.drawable.img_fruit_banana)
 
             countCheck(product) { count ->
                 val formattedCount = String.format(Locale.getDefault(), "%d", count)
                 binding.tvCount.text = formattedCount
 
-//                val price = BigDecimal(binding.tvPrice.text.toString().removePrefix("$"))
-//                val result = price.multiply(BigDecimal(count))
-//                val formattedResult = result.setScale(2, RoundingMode.HALF_UP)
-                val price = product.price.removePrefix("$").toDouble()
+                // Убираем любые символы кроме цифр, запятой и точки
+                val priceString = product.price.replace("[^\\d.,]".toRegex(), "").replace(',', '.')
+                val price = priceString.toDouble()
+
                 val result = price * count
                 val decimalFormat = DecimalFormat("#,##0.00")
-                val formattedPrice = "$" + decimalFormat.format(result)
+
+                // Добавляем символ валюты (₽) перед числом или после, в зависимости от формата
+                val formattedPrice = decimalFormat.format(result) + " ₽"
                 binding.tvPrice.text = formattedPrice
             }
+
 
             binding.btnIncrease.setOnClickListener {
                 incrementProduct(product)

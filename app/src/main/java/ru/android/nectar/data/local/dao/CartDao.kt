@@ -4,30 +4,65 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
 import ru.android.nectar.data.local.entity.CartEntity
 
 @Dao
 interface CartDao {
+    // Добавляем продукт в корзину
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun addCart(cart: CartEntity)
+    suspend fun addCart(cartEntity: CartEntity)
 
-    @Query("DELETE FROM cart_products WHERE userId = :userId AND productId = :productId")
-    suspend fun removeCart(userId: Int, productId: Int)
+    // Удаляем продукт из корзины
+    @Query("DELETE FROM cart_products WHERE productId = :productId")
+    suspend fun removeCart(productId: Int)
 
-    @Query("SELECT EXISTS(SELECT 1 FROM cart_products WHERE userId = :userId AND productId = :productId)")
-    fun isCart(userId: Int, productId: Int): Flow<Boolean>
+    // Проверяем, есть ли продукт в корзине
+    @Query("SELECT EXISTS(SELECT 1 FROM cart_products WHERE productId = :productId)")
+    fun isCart(productId: Int): Flow<Boolean>
 
-    @Query("SELECT productId FROM cart_products WHERE userId = :userId")
-    fun getCartProducts(userId: Int): Flow<List<Int>>
+    // Получаем все продукты в корзине
+    @Query("SELECT * FROM cart_products")
+    fun getCartProducts(): Flow<List<CartEntity>>
 
-    @Query("SELECT * FROM cart_products WHERE userId=:userId AND productId=:productId")
-    fun getCartProduct(userId: Int, productId: Int) : Flow<CartEntity>
+    @Query("SELECT productId FROM cart_products")
+    fun getCartProductIds(): Flow<List<Int>>
 
-    @Query("UPDATE cart_products SET count = count + 1 WHERE userId = :userId AND productId = :productId")
-    suspend fun incrementCount(userId: Int, productId: Int)
 
-    @Query("UPDATE cart_products SET count = CASE WHEN count > 1 THEN count - 1 ELSE 1 END WHERE userId = :userId AND productId = :productId")
-    suspend fun decrementCount(userId: Int, productId: Int)
+    // Получаем конкретный продукт из корзины
+    @Query("SELECT * FROM cart_products WHERE productId = :productId")
+    fun getCartProduct(productId: Int): Flow<CartEntity>
 
+    // Увеличиваем количество
+    @Query("UPDATE cart_products SET count = count + 1 WHERE productId = :productId")
+    suspend fun incrementCount(productId: Int)
+
+
+
+
+    @Transaction
+    suspend fun decrementOrRemove(productId: Int) {
+        val currentCount = getCount(productId)
+        if (currentCount > 1) {
+            decrementCount(productId) // Уменьшаем count
+        } else {
+            removeCart(productId)  // Удаляем товар
+        }
+    }
+
+    // Запросы в DAO:
+    @Query("UPDATE cart_products SET count = count - 1 WHERE productId = :productId AND count > 1")
+    suspend fun decrementCount(productId: Int)
+
+    @Query("SELECT count FROM cart_products WHERE productId = :productId")
+    suspend fun getCount(productId: Int): Int
+
+    // Массовое добавление (для синхронизации)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(cartItems: List<CartEntity>)
+
+    // Очищаем таблицу перед синхронизацией
+    @Query("DELETE FROM cart_products")
+    suspend fun clearAll()
 }

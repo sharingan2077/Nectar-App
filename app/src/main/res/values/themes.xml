@@ -85,6 +85,10 @@
 
     <style name="Theme.Nectar" parent="Base.Theme.Nectar" />
 
+    <style name="ShapeAppearanceOverlay.CornerSmall" parent="">
+        <item name="cornerSize">8dp</item>
+    </style>
+
 
 
 </resources>

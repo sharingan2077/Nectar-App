@@ -39,6 +39,12 @@
     <color name="bottom_un_selected">@color/md_theme_onSurfaceVariant</color>
 <!--    <color name="ic_color">@color</color>-->
 
+    <color name="primaryTextColor">#212121</color>
+    <color name="secondaryTextColor">#757575</color>
+    <color name="card_stroke">#1E000000</color>
+    <color name="statusPending">#FFA000</color>
+    <color name="error">#D32F2F</color>
+
 
     <color name="md_theme_primary">#006D3B</color>
     <color name="md_theme_onPrimary">#FFFFFF</color>

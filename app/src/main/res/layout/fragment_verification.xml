@@ -14,7 +14,7 @@
         android:layout_marginStart="25dp"
         android:layout_marginTop="140dp"
         android:fontFamily="@font/gilroy_semibold"
-        android:text="Enter your 4-digit code"
+        android:text="@string/enter_your_4_digit_code"
         android:textSize="26sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:fontFamily="@font/gilroy_semibold"
-        android:text="Code"
+        android:text="@string/code"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@+id/textView5"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
@@ -62,7 +62,7 @@
         android:layout_height="40dp"
         android:fontFamily="@font/gilroy_medium"
         android:gravity="center"
-        android:text="Resend Code"
+        android:text="@string/resend_code"
         android:textColor="@color/green"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/btn_next"

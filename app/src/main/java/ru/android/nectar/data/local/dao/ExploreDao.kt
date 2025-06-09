@@ -9,4 +9,7 @@ import ru.android.nectar.data.local.entity.ProductEntity
 interface ExploreDao {
     @Query("SELECT * FROM products WHERE LOWER(name) LIKE LOWER(:query || '%')")
     fun searchProducts(query: String): Flow<List<ProductEntity>>
+
+    @Query("SELECT * FROM products WHERE LOWER(productType) = LOWER(:type)")
+    fun getProductsByType(type: String): Flow<List<ProductEntity>>
 }

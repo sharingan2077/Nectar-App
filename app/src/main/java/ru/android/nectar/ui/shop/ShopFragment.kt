@@ -1,6 +1,8 @@
 package ru.android.nectar.ui.shop
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,10 +12,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import ru.android.nectar.R
+import ru.android.nectar.adapters.BannerAdapter
 import ru.android.nectar.adapters.ProductAdapter
 import ru.android.nectar.databinding.FragmentShopBinding
+import ru.android.nectar.example.dataProductList
 import ru.android.nectar.ui.viewmodel.CartViewModel
 import ru.android.nectar.ui.viewmodel.FavouriteViewModel
 import ru.android.nectar.ui.viewmodel.ShopViewModel
@@ -33,6 +39,22 @@ class ShopFragment : Fragment() {
     private lateinit var adapterBestSelling: ProductAdapter
 
 
+    private lateinit var adapter: BannerAdapter
+    private val handler = Handler(Looper.getMainLooper())
+    private val banners = listOf(
+        R.drawable.img_banner_1,
+        R.drawable.img_banner_2,
+        R.drawable.img_banner_3
+    )
+
+    private val autoScrollRunnable = object : Runnable {
+        override fun run() {
+            val nextItem = (binding.bannerViewPager.currentItem + 1) % banners.size
+            binding.bannerViewPager.setCurrentItem(nextItem, true)
+            handler.postDelayed(this, 6000)
+        }
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,37 +63,55 @@ class ShopFragment : Fragment() {
         binding = FragmentShopBinding.inflate(inflater, container, false)
 
 
-        viewModel.addProductsIfEmpty()
+//        refreshDatabase()
+
+        startFragment()
+//
+        return binding.root
+    }
+
+    private fun refreshDatabase() {
+        viewModel.refreshProducts(dataProductList)
+//        viewModel.addProductsIfEmpty()
+        viewModel.uploadLocalChanges()
+    }
+    private fun startFragment() {
+        viewModel.performSync()
+        setupSyncObserver()
 
         setupRecyclerView()
         observeData()
 
-        return binding.root
+        binding.dotsIndicator.attachTo(binding.bannerViewPager)
+        handler.postDelayed(autoScrollRunnable, 4000)
     }
 
 
 
     private fun setupRecyclerView() {
+        adapter = BannerAdapter(banners)
+        binding.bannerViewPager.adapter = adapter
+
         adapterProduct = ProductAdapter(
             onCartCheck = { product, callback ->
                 viewLifecycleOwner.lifecycleScope.launch {
-                    cartViewModel.isCart(1, product.id).collect { isCart ->
+                    cartViewModel.isCart(product.id).collect { isCart ->
                         callback(isCart)
                     }
                 }
             },
             onCartClick = { product ->
-                cartViewModel.addCart(1, product.id)
+                cartViewModel.addCart(product.id)
             },
             onFavoriteCheck = { product, callback ->
                 viewLifecycleOwner.lifecycleScope.launch {
-                    favouriteViewModel.isFavorite(1, product.id).collect { isFav ->
+                    favouriteViewModel.isFavorite(product.id).collect { isFav ->
                         callback(isFav) // Передаем результат обратно в адаптер
                     }
                 }
             },
             onFavoriteClick = { product ->
-                favouriteViewModel.toggleFavorite(1, product.id) // Меняем статус
+                favouriteViewModel.toggleFavorite(product.id) // Меняем статус
             }
         )
 
@@ -81,25 +121,25 @@ class ShopFragment : Fragment() {
         adapterExclusive = ProductAdapter(
             onCartCheck = { product, callback ->
                 viewLifecycleOwner.lifecycleScope.launch {
-                    cartViewModel.isCart(1, product.id).collect { isCart ->
+                    cartViewModel.isCart(product.id).collect { isCart ->
                         callback(isCart)
                     }
                 }
             },
             onCartClick = { product ->
                 Log.d(TAG, "adapterExclusive onCartClick -> ${product.name}")
-                cartViewModel.addCart(1, product.id)
+                cartViewModel.addCart(product.id)
             },
             onFavoriteCheck = { product, callback ->
                 viewLifecycleOwner.lifecycleScope.launch {
-                    favouriteViewModel.isFavorite(1, product.id).collect { isFav ->
+                    favouriteViewModel.isFavorite(product.id).collect { isFav ->
                         callback(isFav)
                     }
                 }
             },
             onFavoriteClick = { product ->
                 Log.d(TAG, "adapterExclusive onFavouriteClick -> ${product.name}")
-                favouriteViewModel.toggleFavorite(1, product.id)
+                favouriteViewModel.toggleFavorite(product.id)
             }
         )
 
@@ -110,24 +150,24 @@ class ShopFragment : Fragment() {
         adapterBestSelling = ProductAdapter(
             onCartCheck = { product, callback ->
                 viewLifecycleOwner.lifecycleScope.launch {
-                    cartViewModel.isCart(1, product.id).collect { isCart ->
+                    cartViewModel.isCart(product.id).collect { isCart ->
                         callback(isCart)
                     }
                 }
             },
             onCartClick = { product ->
                 Log.d(TAG, "adapterBestSelling onCartClick -> ${product.name}")
-                cartViewModel.addCart(1, product.id)
+                cartViewModel.addCart(product.id)
             },
             onFavoriteCheck = { product, callback ->
                 viewLifecycleOwner.lifecycleScope.launch {
-                    favouriteViewModel.isFavorite(1, product.id).collect { isFav ->
+                    favouriteViewModel.isFavorite(product.id).collect { isFav ->
                         callback(isFav)
                     }
                 }
             },
             onFavoriteClick = { product ->
-                favouriteViewModel.toggleFavorite(1, product.id)
+                favouriteViewModel.toggleFavorite(product.id)
             }
         )
 
@@ -158,5 +198,35 @@ class ShopFragment : Fragment() {
                 adapterBestSelling.submitList(products)
             }
         }
+    }
+
+    private fun setupSyncObserver() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.syncState.collect { state ->
+                when (state) {
+                    is ShopViewModel.SyncState.Loading -> {
+                        // Показываем индикатор загрузки
+                        binding.pbProducts.visibility = View.VISIBLE
+                    }
+                    is ShopViewModel.SyncState.Success -> {
+                        binding.pbProducts.visibility = View.GONE
+                        // Данные автоматически обновятся через observeData()
+                    }
+                    is ShopViewModel.SyncState.Error -> {
+                        binding.pbProducts.visibility = View.GONE
+                        // Показываем ошибку только если это не отсутствие интернета
+                        if (!state.message.contains("internet", ignoreCase = true)) {
+//                            Snackbar.make(binding.root, state.message, Snackbar.LENGTH_SHORT).show()
+                        }
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        handler.removeCallbacks(autoScrollRunnable)
     }
 }

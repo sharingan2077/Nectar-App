@@ -1,9 +1,12 @@
 package ru.android.nectar
 
 import android.app.Application
+import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import dagger.hilt.android.HiltAndroidApp
 import androidx.core.content.edit
+
+private const val TAG = "MyApp"
 
 @HiltAndroidApp
 class MyApp : Application() {
@@ -12,6 +15,8 @@ class MyApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        Log.d(TAG, "Application created")
+
         val prefs = getSharedPreferences("theme_prefs", MODE_PRIVATE)
         darkTheme = prefs.getBoolean("dark_theme", false)
         AppCompatDelegate.setDefaultNightMode(

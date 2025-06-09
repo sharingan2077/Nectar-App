@@ -1,18 +1,20 @@
 package ru.android.nectar.data.repository
 
 import android.app.Activity
+import android.content.Context
 import android.util.Log
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.PhoneAuthCredential
-import com.google.firebase.auth.PhoneAuthProvider
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.FirebaseException
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.PhoneAuthOptions
-import com.google.firebase.auth.PhoneAuthProvider.OnVerificationStateChangedCallbacks
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.tasks.await
+import dagger.hilt.android.qualifiers.ApplicationContext
+import ru.android.nectar.data.api.AuthApi
+import ru.android.nectar.data.api.ProductCartApi
+import ru.android.nectar.data.api.ProductFavoriteApi
+import ru.android.nectar.data.local.dao.CartDao
+import ru.android.nectar.data.local.dao.FavouriteDao
+import ru.android.nectar.data.local.entity.CartEntity
+import ru.android.nectar.data.local.entity.FavouriteEntity
+import ru.android.nectar.data.model.AuthData
+import ru.android.nectar.data.model.LoginRequest
+import ru.android.nectar.data.model.RegisterRequest
+import ru.android.nectar.data.model.toEntity
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -22,65 +24,78 @@ import kotlin.coroutines.suspendCoroutine
 private const val TAG = "AuthRepository"
 
 class AuthRepository @Inject constructor(
-    private val firebaseAuth: FirebaseAuth
+    private val api: AuthApi,
+    private val productFavoriteApi: ProductFavoriteApi,
+    private val productCartApi: ProductCartApi,
+    private val favoriteDao: FavouriteDao,
+    private val cartDao: CartDao,
+    @ApplicationContext private val context: Context
 ) {
-    fun getCurrentUser(): FirebaseUser? {
-        return firebaseAuth.currentUser
+
+
+    suspend fun register(
+        login: String,
+        password: String,
+        username: String
+    ): Result<Unit> {
+        return try {
+            val response = api.register(RegisterRequest(login, password, username))
+            AuthStorage.saveAuthData(
+                context = context,
+                token = response.token,
+                userId = response.userId,
+                username = response.username
+            )
+            syncUserData(response.userId) // Синхронизируем данные после регистрации
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
-    fun signUpWithEmail(email: String, password: String, onComplete: (Boolean, Exception?) -> Unit) {
-        firebaseAuth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    onComplete(true, null)
-                } else {
-                    onComplete(false, task.exception)
-                }
-            }
+    suspend fun login(login: String, password: String): Result<Unit> {
+        return try {
+            val response = api.login(LoginRequest(login, password))
+            AuthStorage.saveAuthData(
+                context = context,
+                token = response.token,
+                userId = response.userId,
+                username = response.username
+            )
+            syncUserData(response.userId) // Синхронизируем данные после входа
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
-    fun signInWithEmail(email: String, password: String, onComplete: (Boolean, Exception?) -> Unit) {
-        firebaseAuth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    onComplete(true, null)
-                } else {
-                    onComplete(false, task.exception)
-                }
-            }
+    private suspend fun syncUserData(userId: Int) {
+        try {
+            // Синхронизация избранного
+            val favorites = productFavoriteApi.getFavorites(userId)
+            favoriteDao.clearAll()
+            favoriteDao.insertAll(favorites.map { FavouriteEntity(it.id) }) // Предполагаем, что ProductResponseRemote имеет поле id
+
+            // Синхронизация корзины
+            val cartItems = productCartApi.getCartProducts(userId)
+            cartDao.clearAll()
+            cartDao.insertAll(cartItems.map {
+                it.toEntity()
+            })
+        } catch (e: Exception) {
+            Log.e("AuthRepository", "Failed to sync user data", e)
+        }
     }
 
-    fun signOut() {
-        firebaseAuth.signOut()
+    suspend fun logout() {
+        AuthStorage.clearAuthData(context)
     }
 
-
-    fun verifyPhoneNumber(
-        phoneNumber: String,
-        activity: Activity,
-        callbacks: OnVerificationStateChangedCallbacks
-    ) {
-        val options = PhoneAuthOptions.newBuilder(firebaseAuth)
-            .setPhoneNumber(phoneNumber)
-            .setTimeout(60L, TimeUnit.SECONDS)
-            .setActivity(activity)
-            .setCallbacks(callbacks)
-            .build()
-        PhoneAuthProvider.verifyPhoneNumber(options)
+    fun getCurrentUsername(): String? {
+        return AuthStorage.getAuthData(context)?.username
     }
 
-    fun signInWithCredential(
-        credential: PhoneAuthCredential,
-        onComplete: (Boolean, Exception?) -> Unit
-    ) {
-        firebaseAuth.signInWithCredential(credential)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    onComplete(true, null)
-                } else {
-                    onComplete(false, task.exception)
-                }
-            }
+    fun isAuthenticated(): Boolean {
+        return AuthStorage.getAuthData(context) != null
     }
 }
-

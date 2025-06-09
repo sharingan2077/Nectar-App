@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -22,17 +23,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.android.nectar.adapters.ProductAdapter
-import ru.android.nectar.adapters.SearchProductAdapter
 import ru.android.nectar.databinding.FragmentSearchBinding
-import ru.android.nectar.databinding.LayoutErrorBinding
-import ru.android.nectar.databinding.LayoutNoResultsBinding
 import ru.android.nectar.ui.viewmodel.CartViewModel
 import ru.android.nectar.ui.viewmodel.FavouriteViewModel
 import ru.android.nectar.ui.viewmodel.ExploreViewModel
-import ru.android.nectar.ui.viewmodel.SearchViewModel
 import androidx.core.content.edit
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.android.nectar.adapters.SearchHistoryAdapter
+import ru.android.nectar.ui.viewmodel.Resource
 
 private const val TAG = "SearchFragment"
 
@@ -45,22 +43,16 @@ class SearchFragment : Fragment() {
     private val cartViewModel: CartViewModel by activityViewModels()
     private lateinit var adapter: ProductAdapter
 
-    private lateinit var searchProductAdapter: SearchProductAdapter
-    private val searchViewModel: SearchViewModel by viewModels()
-
-    private lateinit var bindingLayoutOne: LayoutNoResultsBinding
-    private lateinit var bindingLayoutTwo: LayoutErrorBinding
 
     private lateinit var historyAdapter: SearchHistoryAdapter
-
 
 
     private val handler = Handler(Looper.getMainLooper())
     private val searchRunnable = Runnable {
         val query = binding.etSearch.text.toString()
+        Log.d(TAG, "query is $query")
         exploreViewModel.searchProducts(query)
     }
-
 
 
     override fun onCreateView(
@@ -69,15 +61,13 @@ class SearchFragment : Fragment() {
     ): View {
         binding = FragmentSearchBinding.inflate(inflater)
 
-        bindingLayoutOne = LayoutNoResultsBinding.inflate(inflater)
-        bindingLayoutTwo = LayoutErrorBinding.inflate(inflater)
-
         showKeyboard(binding.etSearch)
         binding.etSearch.requestFocus()
 
         binding.imgBack.setOnClickListener {
             findNavController().popBackStack()
         }
+
         binding.imgClose.setOnClickListener {
             binding.etSearch.text.clear()
             hideKeyboard(binding.etSearch)
@@ -85,86 +75,165 @@ class SearchFragment : Fragment() {
 
         setupRecyclerView()
         observeData()
+        setupRetryButton()
 
-        // Логика поиска (добавить адаптер и фильтрацию)
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 searchDebounce()
-//                exploreViewModel.searchProducts(s.toString())
-//                searchViewModel.searchProducts(s.toString())
             }
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.imgClose.visibility = if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
+
+                if (s.isNullOrEmpty()) {
+                    if (binding.etSearch.hasFocus()) {
+                        showInitialState()
+                    }
+                }
             }
         })
 
         binding.etSearch.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH || event?.keyCode == KeyEvent.KEYCODE_SEARCH) {
                 hideKeyboard(v)
-                exploreViewModel.searchProducts(binding.etSearch.text.toString())
+                executeSearch(binding.etSearch.text.toString())
                 true
             } else {
                 false
             }
         }
-//        binding.rvSearch.visibility = View.GONE
-//        bindingLayoutOne.llNoResults.visibility = View.VISIBLE
-//        bindingLayoutTwo.llError.visibility = View.GONE
 
-
-//        bindingLayoutTwo.btnRetry.setOnClickListener {
-//            searchViewModel.retryLastSearch()
-//        }
-
-        // Инициализация адаптера
-        historyAdapter = SearchHistoryAdapter { query ->
-            binding.etSearch.setText(query)
-            exploreViewModel.searchProducts(query)
-            hideKeyboard(binding.etSearch)
-        }
-
-        binding.rvSearchHistory.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvSearchHistory.adapter = historyAdapter
 
         binding.etSearch.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && getHistory().isNotEmpty()) {
-                showHistory()
+            if (hasFocus) {
+                exploreViewModel.loadSearchHistory()
             }
         }
 
         binding.imgClearHistory.setOnClickListener {
-            clearHistory()
-            showHistory()
+            exploreViewModel.clearSearchHistory()
+            showHistory(emptyList())
         }
+
+        exploreViewModel.loadSearchHistory()
+        showInitialState()
 
         return binding.root
     }
 
+    private fun setupRetryButton() {
+        binding.retryButton.setOnClickListener {
+            // Повторяем последний поисковый запрос
+            val lastQuery = binding.etSearch.text.toString()
+            if (lastQuery.isNotEmpty()) {
+                executeSearch(lastQuery)
+            }
+        }
+    }
+
+    private fun executeSearch(query: String) {
+        Log.d(TAG, "Execute Search")
+        showLoading()
+        exploreViewModel.searchProducts(query)
+    }
+
+    private fun showHistory(history: List<String>) {
+        if (history.isNotEmpty()) {
+            Log.d(TAG, "Showing History")
+            binding.rvSearchHistory.visibility = View.VISIBLE
+            binding.tvHistoryTitle.visibility = View.VISIBLE
+            binding.imgClearHistory.visibility = View.VISIBLE
+            historyAdapter.submitList(history)
+        } else {
+            Log.d(TAG, "Hiding History")
+            binding.rvSearchHistory.visibility = View.GONE
+            binding.tvHistoryTitle.visibility = View.GONE
+            binding.imgClearHistory.visibility = View.GONE
+        }
+    }
+
+    private fun showInitialState() {
+//        Log.d(TAG, "Showing Initial State")
+        binding.pbFindProducts.visibility = View.GONE
+        binding.rvSearch.visibility = View.GONE
+        binding.emptyResultsPlaceholder.visibility = View.GONE
+        binding.errorPlaceholder.visibility = View.GONE
+        binding.initialPlaceholder.visibility = View.VISIBLE
+
+    }
+
+    private fun showLoading() {
+        Log.d(TAG, "Showing Loading")
+        binding.pbFindProducts.visibility = View.VISIBLE
+        binding.rvSearch.visibility = View.GONE
+        binding.emptyResultsPlaceholder.visibility = View.GONE
+        binding.initialPlaceholder.visibility = View.GONE
+        binding.errorPlaceholder.visibility = View.GONE
+//        binding.rvSearchHistory.visibility = View.GONE
+//        binding.tvHistoryTitle.visibility = View.GONE
+//        binding.imgClearHistory.visibility = View.GONE
+    }
+
+    private fun showResults() {
+        binding.pbFindProducts.visibility = View.GONE
+        binding.rvSearch.visibility = View.VISIBLE
+        binding.emptyResultsPlaceholder.visibility = View.GONE
+        binding.errorPlaceholder.visibility = View.GONE
+        binding.initialPlaceholder.visibility = View.GONE
+    }
+
+    private fun showEmptyResults() {
+        binding.pbFindProducts.visibility = View.GONE
+        binding.rvSearch.visibility = View.GONE
+        binding.emptyResultsPlaceholder.visibility = View.VISIBLE
+        binding.errorPlaceholder.visibility = View.GONE
+        binding.initialPlaceholder.visibility = View.GONE
+    }
+
+    private fun showError() {
+        binding.pbFindProducts.visibility = View.GONE
+        binding.rvSearch.visibility = View.GONE
+        binding.emptyResultsPlaceholder.visibility = View.GONE
+        binding.initialPlaceholder.visibility = View.GONE
+        binding.errorPlaceholder.visibility = View.VISIBLE
+    }
+
     private fun setupRecyclerView() {
+
+        historyAdapter = SearchHistoryAdapter { query ->
+            binding.etSearch.setText(query)
+            binding.etSearch.setSelection(query.length)
+            executeSearch(query)
+            hideKeyboard(binding.etSearch)
+        }
+        binding.rvSearchHistory.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvSearchHistory.adapter = historyAdapter
+
+
         adapter = ProductAdapter(
             onCartCheck = { product, callback ->
                 viewLifecycleOwner.lifecycleScope.launch {
-                    cartViewModel.isCart(1, product.id).collect { isCart ->
+                    cartViewModel.isCart(product.id).collect { isCart ->
                         callback(isCart)
                     }
                 }
             },
             onCartClick = { product ->
-                cartViewModel.addCart(1, product.id)
+                cartViewModel.addCart(product.id)
             },
             onFavoriteCheck = { product, callback ->
                 viewLifecycleOwner.lifecycleScope.launch {
-                    favouriteViewModel.isFavorite(1, product.id).collect { isFav ->
+                    favouriteViewModel.isFavorite(product.id).collect { isFav ->
                         callback(isFav)
                     }
                 }
             },
             onFavoriteClick = { product ->
-                favouriteViewModel.toggleFavorite(1, product.id)
+                favouriteViewModel.toggleFavorite(product.id)
             },
             onProductClick = { product ->
-                saveToHistory(product.name)
+                exploreViewModel.addProductToHistory(product)
             }
         )
 
@@ -173,129 +242,79 @@ class SearchFragment : Fragment() {
             adapter = this@SearchFragment.adapter
         }
 
-
-//        searchProductAdapter = SearchProductAdapter()
-//        binding.rvSearch.apply {
-//            layoutManager = GridLayoutManager(requireContext(), 2)
-//            adapter = this@SearchFragment.searchProductAdapter
-//        }
-
-
-
     }
 
     private fun observeData() {
+
         viewLifecycleOwner.lifecycleScope.launch {
-            exploreViewModel.searchResults.collectLatest { products ->
-                adapter.submitList(products)
-
-                binding.progressBar.visibility = View.GONE
-
-                if (products.isNotEmpty()) {
-                    binding.rvSearch.visibility = View.VISIBLE
-                } else {
-                    binding.rvSearch.visibility = View.GONE
-                    // Можно тут показать пустой плейсхолдер, если нужно
+            exploreViewModel.searchHistory.collectLatest { history ->
+                if (binding.etSearch.hasFocus() && history.isNotEmpty()) {
+                    Log.d(TAG, "Show History")
+                    showHistory(history.map { it.name })
                 }
-
             }
         }
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            searchViewModel.searchResults.collectLatest { products ->
-//                searchProductAdapter.updateData(products)
-//            }
-//        }
-//        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-//            searchViewModel.searchState.collectLatest { state ->
-//                when (state) {
-//                    is SearchState.Loading -> {
-//                        binding.rvSearch.visibility = View.GONE
-//                        bindingLayoutOne.llNoResults.visibility = View.GONE
-//                        bindingLayoutTwo.llError.visibility = View.GONE
-//                    }
-//                    is SearchState.Success -> {
-//                        binding.rvSearch.visibility = View.VISIBLE
-//                        bindingLayoutOne.llNoResults.visibility = View.GONE
-//                        bindingLayoutTwo.llError.visibility = View.GONE
-//                        searchProductAdapter.updateData(state.products)
-//                    }
-//                    is SearchState.Empty -> {
-//                        binding.rvSearch.visibility = View.GONE
-//                        bindingLayoutOne.llNoResults.visibility = View.VISIBLE
-//                        bindingLayoutTwo.llError.visibility = View.GONE
-//                    }
-//                    is SearchState.Error -> {
-//                        binding.rvSearch.visibility = View.GONE
-//                        bindingLayoutOne.llNoResults.visibility = View.GONE
-//                        bindingLayoutTwo.llError.visibility = View.VISIBLE
-//                    }
-//                }
-//            }
-//        }
+
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            exploreViewModel.searchResults.collectLatest { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        Log.d(TAG, "Is Resource Loading")
+                        showLoading()
+                    }
+                    is Resource.Success -> {
+                        if (result.data.isNullOrEmpty()) {
+                            if (binding.etSearch.text.isNullOrEmpty()) {
+                                showInitialState()
+                            } else {
+                                showEmptyResults()
+                            }
+                        } else {
+                            adapter.submitList(result.data)
+                            showResults()
+                        }
+                    }
+
+                    is Resource.Error -> {
+                        showError()
+                    }
+                }
+            }
+        }
     }
 
 
     private fun showKeyboard(view: View) {
-        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
     }
+
     private fun hideKeyboard(view: View) {
-        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.etSearch.windowToken, 0)
     }
 
 
-    private fun getHistory(): List<String> {
-        val prefs = requireContext().getSharedPreferences("search_history", Context.MODE_PRIVATE)
-        val set = prefs.getStringSet("history", emptySet()) ?: emptySet()
-        return set.toMutableList().sortedByDescending { it } // Последние сверху
-    }
-
-    private fun saveToHistory(query: String) {
-        if (query.isBlank()) return
-        val prefs = requireContext().getSharedPreferences("search_history", Context.MODE_PRIVATE)
-        val history = getHistory().toMutableList()
-        history.remove(query) // убираем, чтобы не было дубликатов
-        history.add(0, query) // добавляем в начало
-        if (history.size > 10) {
-            history.removeAt(history.lastIndex)
-        }
-        prefs.edit() { putStringSet("history", history.toSet()) }
-    }
-
-    private fun clearHistory() {
-        val prefs = requireContext().getSharedPreferences("search_history", Context.MODE_PRIVATE)
-        prefs.edit() { clear() }
-    }
-    private fun showHistory() {
-        val history = getHistory()
-        if (history.isNotEmpty()) {
-            binding.rvSearchHistory.visibility = View.VISIBLE
-            binding.tvHistoryTitle.visibility = View.VISIBLE
-            binding.imgClearHistory.visibility = View.VISIBLE
-            historyAdapter.submitList(history)
-        } else {
-            binding.rvSearchHistory.visibility = View.GONE
-            binding.tvHistoryTitle.visibility = View.GONE
-            binding.imgClearHistory.visibility = View.GONE
-        }
-    }
-
-//    private fun searchDebounce() {
-//        handler.removeCallbacks(searchRunnable)
-//        handler.postDelayed(searchRunnable, 2000L) // 2 секунды
-//    }
     private fun searchDebounce() {
         handler.removeCallbacks(searchRunnable)
+        val query = binding.etSearch.text.toString()
 
-        // Показываем прогресс, скрываем всё остальное
-        binding.progressBar.visibility = View.VISIBLE
-        binding.rvSearch.visibility = View.GONE
-        binding.rvSearchHistory.visibility = View.GONE
-        binding.tvHistoryTitle.visibility = View.GONE
-        binding.imgClearHistory.visibility = View.GONE
+        when {
+            query.isEmpty() -> {
+                if (binding.etSearch.hasFocus()) {
+                    showInitialState()
+                }
+                return
+            }
 
-        handler.postDelayed(searchRunnable, 2000L)
+            else -> {
+                showLoading()
+                handler.postDelayed(searchRunnable, 500L)
+            }
+        }
     }
 
 
@@ -303,9 +322,5 @@ class SearchFragment : Fragment() {
         super.onDestroyView()
         handler.removeCallbacks(searchRunnable)
     }
-
-
-
-
 
 }

@@ -8,20 +8,24 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import dagger.hilt.android.AndroidEntryPoint
 import ru.android.nectar.R
 import ru.android.nectar.databinding.FragmentLogInBinding
 import ru.android.nectar.ui.viewmodel.AuthViewModel
 
 
+@AndroidEntryPoint
 class LogInFragment : Fragment() {
-    private lateinit var binding: FragmentLogInBinding
-    private val authViewModel: AuthViewModel by activityViewModels()
+    private var _binding: FragmentLogInBinding? = null
+    private val binding get() = _binding!!
+
+    private val authViewModel: AuthViewModel by activityViewModels() // Или activityViewModels(), если ViewModel общая
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentLogInBinding.inflate(inflater, container, false)
+        _binding = FragmentLogInBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -29,25 +33,35 @@ class LogInFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnLogIn.setOnClickListener {
-            val email = binding.etEmail.text.toString().trim()
+            val login = binding.etLogin.text.toString().trim()
             val password = binding.etPassword.text.toString().trim()
-            if (email.isNotEmpty() && password.isNotEmpty()) {
-                authViewModel.signInWithEmail(email, password)
+            if (login.isNotEmpty() && password.isNotEmpty()) {
+                authViewModel.login(login, password)
+            } else {
+                Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show()
             }
         }
+
         binding.llSignUp.setOnClickListener {
             findNavController().navigate(R.id.action_logInFragment_to_signUpFragment)
         }
-        authViewModel.signInStatus.observe(viewLifecycleOwner) { success ->
-            if (success) {
-//                findNavController().navigate(R.id.shopFragment) {
-//                    popUpTo(R.id.logInFragment) { inclusive = true }
-//                }
-                findNavController().navigate(R.id.action_logInFragment_to_shopFragment)
-            }
-            else {
-                Toast.makeText(requireContext(), "Failed to Log In", Toast.LENGTH_LONG).show()
-            }
+
+        authViewModel.authResult.observe(viewLifecycleOwner) { result ->
+            result?.fold(
+                onSuccess = { token ->
+                    Toast.makeText(requireContext(), "Logged in!", Toast.LENGTH_SHORT).show()
+                    // Навигация в главный экран, например:
+                    findNavController().navigate(R.id.action_logInFragment_to_shopFragment)
+                },
+                onFailure = { e ->
+                    Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            )
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

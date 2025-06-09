@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ui.account.AboutFragment"
+    android:background="@drawable/img_background_auth"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- Анимированная иконка приложения -->
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animationView"
+            android:layout_width="200dp"
+            android:layout_marginTop="30dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center_horizontal"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/about" />
+
+        <!-- Название приложения -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:text="Nectar"
+            android:fontFamily="@font/aclonica_regular"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
+        <!-- Версия приложения -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="4dp"
+            android:text="Версия 1.0.0"
+            android:fontFamily="@font/gilroy_regular"
+            android:textSize="13sp" />
+
+
+        <!-- Описание приложения -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:lineSpacingExtra="6dp"
+            android:fontFamily="@font/gilroy_medium"
+            android:text="Nectar — удобное мобильное приложение для быстрого поиска, выбора и оформления заказов продуктов"
+            android:textAlignment="center"
+            android:textSize="15sp" />
+
+        <!-- Разделитель -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="16dp"
+            android:background="@color/md_theme_secondary" />
+
+        <!-- Разработчик -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Разработано с ❤️"
+            android:fontFamily="@font/gilroy_semibold"
+            android:textSize="16sp" />
+        <!-- Кнопки соцсетей -->
+        <ImageView
+            android:id="@+id/img_telegram"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="30dp"
+            android:contentDescription="Telegram"
+            android:src="@drawable/img_telegram" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/textPrivacyPolicy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="24dp"
+            android:fontFamily="@font/gilroy_regular"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="12dp"
+            android:layout_marginBottom="20dp"
+            android:text="Политика конфиденциальности"
+            android:textSize="14sp" />
+    </LinearLayout>
+</ScrollView>

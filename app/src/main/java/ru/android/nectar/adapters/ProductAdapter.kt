@@ -1,6 +1,7 @@
 package ru.android.nectar.adapters
 
 import android.animation.ObjectAnimator
+import android.content.Context
 import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,9 +12,11 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.android.nectar.R
 import ru.android.nectar.data.local.entity.ProductEntity
 import ru.android.nectar.databinding.ItemProductBinding
+import ru.android.nectar.utils.getDrawableIdByName
 
 
 private const val TAG = "ProductAdapter"
+
 
 class ProductAdapter(
     private val onFavoriteCheck: (ProductEntity, (Boolean) -> Unit) -> Unit, // Запрос избранного
@@ -26,7 +29,9 @@ class ProductAdapter(
     inner class ProductViewHolder(private val binding: ItemProductBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(product: ProductEntity) {
-            binding.imgProduct.setImageResource(product.imageRes)
+
+            val resId = getDrawableIdByName(binding.root.context, product.imageName)
+            binding.imgProduct.setImageResource(if (resId != 0) resId else R.drawable.img_fruit_banana)
             binding.tvName.text = product.name
             binding.tvSpec.text = product.spec
             binding.tvPrice.text = product.price
